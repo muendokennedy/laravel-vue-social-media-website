@@ -49,7 +49,7 @@ const secondPost = {
 }
 </script>
 <template>
-    <div>
+    <div class="h-full overflow-auto">
         <PostItem :post="firstPost"/>
         <PostItem :post="secondPost"/>
     </div>
