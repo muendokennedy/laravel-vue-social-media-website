@@ -7,9 +7,9 @@ const searchKeyword = ref('')
 
 </script>
 <template>
-    <div class="px-3">
-        <h2 class="text-2xl font-bold mb-4">My Friends</h2>
-        <TextInput v-model="searchKeyword" placeHolder="Search here..."/>
+    <div class="px-3 bg-white rounded border py-3">
+        <h2 class="text-xl font-bold mb-4">My Friends</h2>
+        <TextInput v-model="searchKeyword" placeHolder="Search here..." class="w-full"/>
         <div class="py-8 px-3">
             <div v-if="false" class="text-gray-400 flex text-center">
                 You do not have any friends yet.
