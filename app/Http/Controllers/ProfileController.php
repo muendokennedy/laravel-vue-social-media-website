@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use App\Models\User;
 use Inertia\Response;
@@ -72,7 +73,10 @@ class ProfileController extends Controller
         $cover = $data['cover'] ?? null;
 
         if($cover){
-            $path = $cover->store('covers/' . $user->id, 'public');
+            if($user->cover_path){
+                Storage::disk('public')->delete($user->cover_path);
+            }
+            $path = $cover->store('covers/user-' . $user->id, 'public');
             $user->update(['cover_path' => $path]);
         }
 
