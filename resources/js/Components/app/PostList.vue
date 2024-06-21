@@ -1,5 +1,11 @@
 <script setup>
 import PostItem from '@/Components/app/PostItem.vue'
+
+defineProps({
+    posts: {
+        type: Object
+    }
+})
 const firstPost = {
     user: {
         id: 1,
@@ -50,9 +56,9 @@ const secondPost = {
 </script>
 <template>
     <div class="h-full overflow-auto">
-        <PostItem :post="firstPost"/>
-        <PostItem :post="secondPost"/>
+        <PostItem v-for="post in posts" :key="post.id" :post="post"/>
     </div>
+
 </template>
 <style scoped>
 
