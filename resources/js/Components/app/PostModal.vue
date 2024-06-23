@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, ref } from 'vue'
+    import { computed, ref, watch } from 'vue'
     import {TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle} from '@headlessui/vue'
     import InputTextarea from '@/Components/InputTextarea.vue';
     import PostUserInfo from '@/Components/app/PostUserInfo.vue';
@@ -15,6 +15,16 @@
         modelValue: Boolean
     })
 
+    const form = useForm({
+        id: null,
+        body: ''
+    })
+
+    watch(() => props.post, () => {
+        form.id = props.post.id
+        form.body = props.post.body
+    })
+
     const show = computed({
         get: () => props.modelValue,
         set: (value) => emit('update:modelValue', value)
@@ -27,11 +37,6 @@
     }
 
     const submit = () => {
-        const form = useForm({
-            id: props.post.id,
-            body: props.post.body
-        })
-
         form.put(route('post.update', props.post), {
             onSuccess: () => {
                 show.value = false
@@ -88,7 +93,7 @@
                     </DialogTitle>
                     <div class="p-4">
                         <PostUserInfo :post="post" :show-time="false" class="mb-4"/>
-                        <InputTextarea v-model="post.body" class="mb-3 w-full"/>
+                        <InputTextarea v-model="form.body" class="mb-3 w-full"/>
                     </div>
                     <div class="py-3 px-4">
                       <button @click="submit"
