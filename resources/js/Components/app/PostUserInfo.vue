@@ -17,8 +17,9 @@ const props = defineProps({
 })
 
 onMounted(() => {
-    if(props.post.updated_at > props.post.created_at)
-    postUpdatedStatus.value = true
+    if(props.post.time_difference){
+        postUpdatedStatus.value = true
+    }
 })
 
 watch(() => props.post, () => {

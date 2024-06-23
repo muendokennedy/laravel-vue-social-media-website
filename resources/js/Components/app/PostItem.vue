@@ -24,7 +24,7 @@ const isImage = (attachment) => {
 <template>
     <div class="bg-white rounded p-4 mb-3">
         <div class="flex justify-between mb-3">
-            <PostUserInfo :post="post" show-time="true" class="mb-4"/>
+            <PostUserInfo :post="post" class="mb-4"/>
                 <Menu as="div" class="relative inline-block text-left">
                 <div>
                     <MenuButton

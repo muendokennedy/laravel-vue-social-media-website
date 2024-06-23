@@ -19,6 +19,7 @@ class PostResource extends JsonResource
             'body' => $this->body,
             'created_at' => $this->created_at->diffForHumans(),
             'updated_at' => $this->updated_at->diffForHumans(),
+            'time_difference' => $this->created_at->diffInSeconds($this->updated_at),
             'user' => new UserResource($this->user),
             'group' => $this->group,
             'attachments' => $this->postAttachments
