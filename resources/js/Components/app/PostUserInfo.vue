@@ -1,5 +1,11 @@
 <script setup>
-defineProps({
+import { onMounted, ref, watch } from 'vue';
+
+
+const postUpdatedStatus = ref(false)
+
+
+const props = defineProps({
     post: {
         type: Object,
         required: true
@@ -8,6 +14,15 @@ defineProps({
         type: Boolean,
         default: true
     }
+})
+
+onMounted(() => {
+    if(props.post.updated_at > props.post.created_at)
+    postUpdatedStatus.value = true
+})
+
+watch(() => props.post, () => {
+    postUpdatedStatus.value = true
 })
 </script>
 <template>
@@ -27,7 +42,8 @@ defineProps({
                     </a>
                 </template>
             </h4>
-            <small v-if="show-time" class="text-gray-400">{{ post.created_at }}</small>
+            <small v-if="showTime && postUpdatedStatus === false" class="text-gray-400">Created {{ post.created_at }}</small>
+            <small v-else-if="showTime && postUpdatedStatus === true" class="text-gray-400">Created {{ post.created_at }}, Updated {{ post.updated_at }}</small>
         </div>
     </div>
 </template>

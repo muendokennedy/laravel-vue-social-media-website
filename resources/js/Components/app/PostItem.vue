@@ -3,6 +3,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 import { ref } from 'vue'
+import PostUserInfo from '@/Components/app/PostUserInfo.vue'
 
 const props = defineProps({
     post: Object,
@@ -23,25 +24,7 @@ const isImage = (attachment) => {
 <template>
     <div class="bg-white rounded p-4 mb-3">
         <div class="flex justify-between mb-3">
-            <div class="flex items-center gap-2">
-                <a href="javascript:void(0)">
-                            <img :src="post.user.avatar_url" alt="" class="w-10 rounded-full border border-2 hover:border-blue-500 transition-all">
-                </a>
-                <div>
-                    <h4 class="font-bold">
-                        <a href="javascript:void(0)" class="hover:underline">
-                        {{ post.user.name }}
-                        </a>
-                        <template v-if="post.group">
-                            >
-                            <a href="javascript:void(0)" class="hover:underline">
-                                {{ post.group.name }}
-                            </a>
-                        </template>
-                    </h4>
-                    <small class="text-gray-400">{{ post.created_at }}</small>
-                </div>
-            </div>
+            <PostUserInfo :post="post" show-time="true" class="mb-4"/>
                 <Menu as="div" class="relative inline-block text-left">
                 <div>
                     <MenuButton
