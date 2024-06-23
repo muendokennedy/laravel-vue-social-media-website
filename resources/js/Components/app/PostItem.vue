@@ -4,6 +4,7 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
 import { ref } from 'vue'
 import PostUserInfo from '@/Components/app/PostUserInfo.vue'
+import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
     post: Object,
@@ -18,6 +19,14 @@ const openEditModel = () => {
 const isImage = (attachment) => {
     const mime = attachment.mime.split('/')
     return mime[0].toLowerCase() === 'image'
+}
+
+const deletePost = () => {
+    if(window.confirm('Are you sure you want to delete this post!')){
+        router.delete(route('post.destroy', props.post), {
+            preserveScroll: true
+        })
+    }
 }
 
 </script>
@@ -69,6 +78,9 @@ const isImage = (attachment) => {
                         </MenuItem>
                         <MenuItem v-slot="{ active }">
                         <button
+
+                        @click="deletePost"
+
                             :class="[
                             active ? 'bg-indigo-500 text-white' : 'text-gray-900',
                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',

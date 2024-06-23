@@ -17,6 +17,7 @@ Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('pro
      Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
      Route::post('/post', [PostController::class, 'store'])->name('post.store');
      Route::put('/post/{post}', [PostController::class, 'update'])->name('post.update');
+     Route::delete('/post/{post}', [PostController::class, 'destroy'])->name('post.destroy');
  });
 
 require __DIR__.'/auth.php';
