@@ -20,16 +20,22 @@ onMounted(() => {
     if (input.value.hasAttribute('autofocus')) {
         input.value.focus();
     }
+    adjustTextareaHeight()
 });
 
 defineExpose({ focus: () => input.value.focus() });
 
 const onInputChange = () => {
+    adjustTextareaHeight()
+}
+
+const adjustTextareaHeight = () => {
     if(props.autoResize){
         input.value.style.height = 'auto'
         input.value.style.height = input.value.scrollHeight + 'px'
     }
 }
+
 </script>
 
 <template>

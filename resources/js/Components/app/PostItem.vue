@@ -1,11 +1,15 @@
 <script setup>
+import PostModal from '@/Components/app/PostModal.vue'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
+import { ref } from 'vue'
 
 defineProps({
     post: Object,
 })
+
+const showEditModel = ref(false)
 
 const isImage = (attachment) => {
     const mime = attachment.mime.split('/')
@@ -61,6 +65,9 @@ const isImage = (attachment) => {
                     <div class="px-1 py-1">
                         <MenuItem v-slot="{ active }">
                         <button
+
+                        @click="showEditModel = true"
+
                             :class="[
                             active ? 'bg-indigo-500 text-white' : 'text-gray-900',
                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
@@ -142,6 +149,7 @@ const isImage = (attachment) => {
             </button>
         </div>
     </div>
+    <PostModal :post="post" v-model="showEditModel"/>
 </template>
 <style scoped>
 
