@@ -1,36 +1,32 @@
 <script setup>
 import {ref } from 'vue'
 import InputTextarea from '@/Components/InputTextarea.vue';
-import { useForm } from '@inertiajs/vue3';
+import PostModal from '@/Components/app/PostModal.vue'
+import { usePage } from '@inertiajs/vue3';
 
 defineProps({
     placeHolder: String
 })
 
-const newPostForm = useForm({
-    body: null
+const authUser = usePage().props.auth.user
+
+const showModal = ref(false)
+
+const newPost = ref({
+    id: null,
+    body: '',
+    user: authUser
 })
 
-const postCreating = ref(false)
-
-const submitForm = () => {
-    newPostForm.post(route('post.store'), {
-        onSuccess: () => {
-            newPostForm.reset()
-        }
-    })
+const showCreatePostModal = () => {
+    showModal.value = true
 }
 
 </script>
 <template>
     <div class="p-4 bg-white rounded-lg border mb-3">
-        <InputTextarea v-model="newPostForm.body" @click="postCreating = true" class="mb-3 w-full" placeholder="Click here to create new post"/>
-        <div v-if="postCreating" class="flex justify-between">
-            <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 relative">Attach Files
-                <input type="file" class="absolute inset-0 opacity-0">
-            </button>
-            <button @click="submitForm" type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Submit</button>
-        </div>
+        <div @click="showCreatePostModal" class="py-2 px-3 border-2 rounded-md border-gray-200 text-gray-500 cursor-pointer mb-3 w-full">Click here to create new post</div>
+        <PostModal :post="newPost" v-model="showModal"/>
     </div>
 </template>
 <style scoped>

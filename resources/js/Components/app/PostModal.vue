@@ -38,12 +38,24 @@
     }
 
     const submit = () => {
-        form.put(route('post.update', props.post), {
-            onSuccess: () => {
-                show.value = false
-            },
-            preserveScroll: true
-        })
+
+        if(form.id){
+            form.put(route('post.update', props.post), {
+                onSuccess: () => {
+                    show.value = false
+                    form.reset()
+                },
+                preserveScroll: true
+            })
+        } else {
+            form.post(route('post.store'), {
+                onSuccess: () => {
+                    show.value = false
+                    form.reset()
+                },
+                preserveScroll: true
+            })
+        }
     }
 
     const editor = ClassicEditor
@@ -93,7 +105,7 @@
                       as="h3"
                       class="flex items-center justify-between py-3 px-4 font-medium bg-gray-100 leading-6 text-gray-900"
                     >
-                      Update Post
+                      {{ form.id ? 'Update Post' : 'Create Post' }}
                       <button class="w-8 h-8 rounded-full hover:bg-black/5 transition flex items-center justify-center">
                         <XMarkIcon class="w-4 h-4" @click="show = false"/>
                       </button>
