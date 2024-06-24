@@ -2,9 +2,9 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
-import { ref } from 'vue'
 import PostUserInfo from '@/Components/app/PostUserInfo.vue'
 import { router } from '@inertiajs/vue3'
+import { isImage } from '@/helpers.js'
 
 const props = defineProps({
     post: Object,
@@ -14,11 +14,6 @@ const emit = defineEmits(['editClick'])
 
 const openEditModel = () => {
     emit('editClick', props.post)
-}
-
-const isImage = (attachment) => {
-    const mime = attachment.mime.split('/')
-    return mime[0].toLowerCase() === 'image'
 }
 
 const deletePost = () => {
