@@ -5,6 +5,7 @@
     import PostUserInfo from '@/Components/app/PostUserInfo.vue';
     import { XMarkIcon } from '@heroicons/vue/24/solid'
     import { useForm } from '@inertiajs/vue3';
+    import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
     const props = defineProps({
@@ -43,6 +44,12 @@
             },
             preserveScroll: true
         })
+    }
+
+    const editor = ClassicEditor
+
+    const editorConfig = {
+        toolbar: ['heading', '|', 'bold', 'italic', '|', 'link', '|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote']
     }
 
     // function openModal() {
@@ -93,7 +100,8 @@
                     </DialogTitle>
                     <div class="p-4">
                         <PostUserInfo :post="post" :show-time="false" class="mb-4"/>
-                        <InputTextarea v-model="form.body" class="mb-3 w-full"/>
+                        <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
+                        <!-- <InputTextarea v-model="form.body" class="mb-3 w-full"/> -->
                     </div>
                     <div class="py-3 px-4">
                       <button @click="submit"

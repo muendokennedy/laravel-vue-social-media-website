@@ -22,7 +22,7 @@ onMounted(() => {
     }
 })
 
-watch(() => props.post, () => {
+watch(() => props.post.body, () => {
     postUpdatedStatus.value = true
 })
 </script>
@@ -37,7 +37,6 @@ watch(() => props.post, () => {
                 {{ post.user.name }}
                 </a>
                 <template v-if="post.group">
-                    >
                     <a href="javascript:void(0)" class="hover:underline">
                         {{ post.group.name }}
                     </a>
