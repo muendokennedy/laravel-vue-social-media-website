@@ -1,7 +1,7 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon } from '@heroicons/vue/20/solid'
+import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
 import { ChatBubbleLeftRightIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
 import PostUserInfo from '@/Components/app/PostUserInfo.vue'
 import { router } from '@inertiajs/vue3'
@@ -110,15 +110,19 @@ const deletePost = () => {
                 </template>
             </Disclosure>
         </div>
-        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
-            <template v-for="(attachment, index) in post.attachments" :key="index">
+        <div class="grid gap-3 mb-3"
+        :class="[
+            post.attachments.length === 1 ? 'grid-cols-1' :  'grid-cols-2'
+        ]">
+            <template v-for="(attachment, index) in post.attachments.slice(0,4)" :key="index">
                 <div class="group aspect-square bg-blue-100 flex items-center justify-center text-gray-500 relative">
-                    <button class="flex opacity-0 group-hover:opacity-100 transition-all items-center text-gray-100 justify-center w-8 h-8 bg-gray-700 hover:bg-gray-800 rounded absolute top-2 right-2 cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                        </svg>
+                    <div v-if="index === 3" class="absolute inset-0 z-10 bg-black/60 text-white flex items-center justify-center text-2xl">
+                        + {{ post.attachments.length - 4 }} more
+                    </div>
+                    <button class="flex z-10 opacity-0 group-hover:opacity-100 transition-all items-center text-gray-100 justify-center w-8 h-8 bg-gray-700 hover:bg-gray-800 rounded absolute top-2 right-2 cursor-pointer">
+                        <ArrowDownTrayIcon class="size-4"/>
                     </button>
-                    <img v-if="isImage(attachment)" :src="attachment.url" alt="" class="object-cover aspect-square">
+                    <img v-if="isImage(attachment)" :src="attachment.url" alt="" class="object-cover w-full h-full">
                     <template v-else>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 text-gray-500">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />

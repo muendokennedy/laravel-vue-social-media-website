@@ -119,7 +119,7 @@
 <template>
     <teleport to="body">
         <TransitionRoot appear :show="show" as="template">
-          <Dialog as="div" @close="closeModal" class="relative z-10">
+          <Dialog as="div" @close="closeModal" class="relative z-50">
             <TransitionChild
               as="template"
               enter="duration-300 ease-out"
@@ -160,13 +160,16 @@
                     <div class="p-4">
                         <PostUserInfo :post="post" :show-time="false" class="mb-4"/>
                         <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
-                        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 my-3">
+                        <div class="grid gap-3 my-3"
+                        :class="[
+                            attachmentFiles.length === 1 ? 'grid-cols-1' :  'grid-cols-2'
+                            ]">
                             <template v-for="(myFile, index) in attachmentFiles" :key="index">
                                 <div class="group aspect-square bg-blue-100 flex flex-col items-center justify-center text-gray-500 relative">
                                     <button @click="removeFile(myFile)" class="absolute z-20 right-1 top-1 w-7 h-7 flex items-center justify-center bg-black/30 hover:bg-black/70 text-white rounded-full">
                                         <XMarkIcon class="size-5"/>
                                     </button>
-                                    <img v-if="isImage(myFile.file)" :src="myFile.url" alt="" class="object-cover aspect-square">
+                                    <img v-if="isImage(myFile.file)" :src="myFile.url" alt="" class="object-cover w-full h-full">
                                     <template v-else>
                                         <PaperClipIcon class="w-10 h-10 mb-3"/>
                                         <small class="text-center">{{ myFile.file.name }}</small>
