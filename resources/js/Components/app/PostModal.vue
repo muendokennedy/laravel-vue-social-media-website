@@ -37,6 +37,8 @@
 
     const closeModal = () => {
         show.value = false
+        form.reset()
+        attachmentFiles.value = []
     }
 
     const submit = () => {
@@ -82,7 +84,7 @@
             }
             attachmentFiles.value.push(myFile)
         }
-        console.log(attachmentFiles.value)
+        event.target.files = null
     }
 
     const readFile = async (file) => {
@@ -100,6 +102,10 @@
             resolve(null)
         }
         })
+    }
+
+    const removeFile = (file) => {
+        attachmentFiles.value = attachmentFiles.value.filter(f => f !== file)
     }
 
 </script>
@@ -147,20 +153,16 @@
                     <div class="p-4">
                         <PostUserInfo :post="post" :show-time="false" class="mb-4"/>
                         <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
-                        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
-                            <template v-for="myFile in attachmentFiles">
-                                <div class="group aspect-square bg-blue-100 flex items-center justify-center text-gray-500 relative">
-                                    <button class="flex opacity-0 group-hover:opacity-100 transition-all items-center text-gray-100 justify-center w-8 h-8 bg-gray-700 hover:bg-gray-800 rounded absolute top-2 right-2 cursor-pointer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                        </svg>
+                        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 my-3">
+                            <template v-for="(myFile, index) in attachmentFiles" :key="index">
+                                <div class="group aspect-square bg-blue-100 flex flex-col items-center justify-center text-gray-500 relative">
+                                    <button @click="removeFile(myFile)" class="absolute z-20 right-1 top-1 w-7 h-7 flex items-center justify-center bg-black/30 hover:bg-black/70 text-white rounded-full">
+                                        <XMarkIcon class="size-5"/>
                                     </button>
                                     <img v-if="isImage(myFile.file)" :src="myFile.url" alt="" class="object-cover aspect-square">
                                     <template v-else>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 text-gray-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                                        </svg>
-                                        <small>{{ myFile.file.name }}</small>
+                                        <PaperClipIcon class="w-10 h-10 mb-3"/>
+                                        <small class="text-center">{{ myFile.file.name }}</small>
                                     </template>
                                 </div>
                             </template>
