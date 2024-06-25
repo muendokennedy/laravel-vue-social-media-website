@@ -18,7 +18,8 @@
 
     const form = useForm({
         id: null,
-        body: ''
+        body: '',
+        attachments: []
     })
 
     const attachmentFiles = ref([])
@@ -37,17 +38,23 @@
 
     const closeModal = () => {
         show.value = false
+        resetModal()
+    }
+
+    const resetModal = () => {
         form.reset()
         attachmentFiles.value = []
     }
 
     const submit = () => {
 
+        form.attachments = attachmentFiles.value.map(myFile => myFile.file)
+
         if(form.id){
             form.put(route('post.update', props.post), {
                 onSuccess: () => {
                     show.value = false
-                    form.reset()
+                    closeModal()
                 },
                 preserveScroll: true
             })
@@ -55,7 +62,7 @@
             form.post(route('post.store'), {
                 onSuccess: () => {
                     show.value = false
-                    form.reset()
+                    closeModal()
                 },
                 preserveScroll: true
             })
