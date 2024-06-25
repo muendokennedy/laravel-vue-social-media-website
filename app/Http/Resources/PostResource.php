@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\PostAttachmentResource;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,7 +24,7 @@ class PostResource extends JsonResource
             'time_difference' => $this->created_at->diffInSeconds($this->updated_at),
             'user' => new UserResource($this->user),
             'group' => $this->group,
-            'attachments' => $this->postAttachments
+            'attachments' => PostAttachmentResource::collection($this->postAttachments)
         ];
     }
 }
