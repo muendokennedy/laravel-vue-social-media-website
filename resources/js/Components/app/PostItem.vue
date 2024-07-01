@@ -30,7 +30,7 @@ const deletePost = () => {
     <div class="bg-white rounded p-4 mb-3">
         <div class="flex justify-between mb-3">
             <PostUserInfo :post="post" class="mb-4"/>
-                <Menu as="div" class="relative inline-block text-left">
+                <Menu as="div" class="z-10 relative inline-block text-left">
                 <div>
                     <MenuButton
                     class="w-8 h-8 rounded-full hover:bg-black/5 transition flex items-center justify-center"

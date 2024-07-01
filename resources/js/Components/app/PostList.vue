@@ -2,12 +2,15 @@
 import PostItem from '@/Components/app/PostItem.vue'
 import PostModal from '@/Components/app/PostModal.vue'
 import { ref } from 'vue'
+import { usePage } from '@inertiajs/vue3';
 
 defineProps({
     posts: {
         type: Object
     }
 })
+
+const authUser = usePage().props.auth.user
 
 const editPost = ref({})
 
@@ -16,6 +19,15 @@ const showEditModel = ref(false)
 const openEditModal = (post) => {
     editPost.value = post
     showEditModel.value = true
+}
+
+const onModalhide = () => {
+    console.log('1111')
+    editPost.value = {
+        id: null,
+        body: '',
+        user: authUser
+    }
 }
 
 
@@ -71,7 +83,7 @@ const secondPost = {
 <template>
     <div class="h-full overflow-auto">
         <PostItem v-for="post in posts" :key="post.id" :post="post" @edit-click="openEditModal"/>
-        <PostModal :post="editPost" v-model="showEditModel"/>
+        <PostModal :post="editPost" v-model="showEditModel" @hide="onModalhide"/>
     </div>
 </template>
 <style scoped>

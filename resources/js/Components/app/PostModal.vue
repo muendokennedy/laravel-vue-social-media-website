@@ -26,8 +26,7 @@
     const attachmentFiles = ref([])
 
     watch(() => props.post, () => {
-        form.id = props.post.id
-        form.body = props.post.body
+            form.body = props.post.body || ''
     })
 
     const show = computed({
@@ -35,23 +34,26 @@
         set: (value) => emit('update:modelValue', value)
     })
 
-    const emit = defineEmits(['update:modelValue'])
+    const emit = defineEmits(['update:modelValue', 'hide'])
 
     const closeModal = () => {
         show.value = false
+        emit('hide')
         resetModal()
     }
 
     const resetModal = () => {
         form.reset()
         attachmentFiles.value = []
+        props.post.attachments.forEach(file => file.deleted = false)
     }
 
     const submit = () => {
 
         form.attachments = attachmentFiles.value.map(myFile => myFile.file)
 
-        if(form.id){
+        if(props.post.id){
+            form.id = props.post.id
             form.put(route('post.update', props.post), {
                 onSuccess: () => {
                     show.value = false
@@ -122,8 +124,13 @@
     }
 
     const computedAttachments = computed(() => {
-        return [...attachmentFiles.value, ...props.post.attachments]
+            return [...attachmentFiles.value, ...(props.post.attachments || [])]
     })
+
+    const undoDelete = (file) => {
+        file.deleted = false
+        form.deleted_file_ids = form.deleted_file_ids.filter(id => file.id !== id)
+    }
 
 </script>
 <template>
@@ -162,9 +169,9 @@
                       as="h3"
                       class="flex items-center justify-between py-3 px-4 font-medium bg-gray-100 leading-6 text-gray-900"
                     >
-                      {{ form.id ? 'Update Post' : 'Create Post' }}
+                      {{ post.id ? 'Update Post' : 'Create Post' }}
                       <button class="w-8 h-8 rounded-full hover:bg-black/5 transition flex items-center justify-center">
-                        <XMarkIcon class="w-4 h-4" @click="show = false"/>
+                        <XMarkIcon class="w-4 h-4" @click="closeModal"/>
                       </button>
                     </DialogTitle>
                     <div class="p-4">
@@ -179,7 +186,7 @@
                                 <div class="group aspect-square bg-blue-100 flex flex-col items-center justify-center text-gray-500 relative">
                                     <div v-if="myFile.deleted" class="z-10 absolute left-0 bottom-0 right-0 py-2 px-3 text-sm bg-black text-white flex items-center justify-between">
                                         To be deleted
-                                        <ArrowUturnLeftIcon class="size-4 cursor-pointer"/>
+                                        <ArrowUturnLeftIcon @click="undoDelete(myFile)" class="size-4 cursor-pointer"/>
                                     </div>
                                     <button @click="removeFile(myFile)" class="absolute z-20 right-1 top-1 w-7 h-7 flex items-center justify-center bg-black/30 hover:bg-black/70 text-white rounded-full">
                                         <XMarkIcon class="size-5"/>
@@ -194,7 +201,7 @@
                         </div>
                     </div>
                     <div class="py-3 px-4 flex gap-2">
-                      <button @click="submit"
+                      <button
                         type="button"
                         class="relative flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-full">
                         <PaperClipIcon class="h-4 w-4 mr-2"/>

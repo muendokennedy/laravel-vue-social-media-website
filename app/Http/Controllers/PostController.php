@@ -79,7 +79,52 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request, Post $post)
     {
         //
-        $post->update($request->validated());
+
+        $data = $request->validated();
+
+
+        $user = $request->user();
+
+        DB::beginTransaction();
+
+        $allFilepaths = [];
+
+        try {
+
+        $post->update($data);
+
+        /**
+         * @var \Illuminate\Http\UploadedFile[] $files
+         */
+        $files = $data['attachments'] ?? [];
+
+        foreach ($files as $file) {
+
+            $path = $file->store('attachments/' . $post->id, 'public');
+
+            $allFilepaths[] = $path;
+
+            PostAttachment::create([
+                'post_id' => $post->id,
+                'name' => $file->getClientOriginalName(),
+                'path' => $path,
+                'mime' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'created_by' => $user->id
+            ]);
+
+        }
+
+        DB::commit();
+
+    } catch (\Exception $e) {
+        foreach ($allFilepaths as $path) {
+            Storage::disk('public')->delete($path);
+        }
+        DB::rollback();
+
+        throw $e;
+    }
 
         return back();
     }

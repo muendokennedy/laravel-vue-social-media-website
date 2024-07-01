@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatePostRequest extends FormRequest
+class UpdatePostRequest extends StorePostRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,24 +17,18 @@ class UpdatePostRequest extends FormRequest
 
         // $post = Post::where('id', $this->input('id'))->where('user_id', auth()->user()->id)->first();
 
-        $post = Post::where([
-            'id' => $this->input('id'),
-            'user_id' => auth()->user()->id
-        ])->first();
+        // $post = Post::where([
+        //     'id' => $this->input('id'),
+        //     'user_id' => auth()->user()->id
+        // ])->first();
+       dd( $this->all());
 
-        return !!$post;
-    }
+        $post = $this->route('post');
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
-        return [
-            //
-            'body' => 'nullable | string',
-        ];
+        // dd($this->route('post'));
+
+        // return !!$post;
+
+        return $post->user_id === auth()->user()->id;
     }
 }
