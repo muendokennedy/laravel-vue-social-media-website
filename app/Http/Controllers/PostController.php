@@ -95,6 +95,16 @@ class PostController extends Controller
 
         $post->update($data);
 
+        $deleted_ids = $data['deleted_file_ids'] ?? [];
+
+        $attachments = PostAttachment::query()
+        ->where('post_id', $post->id)
+        ->whereIn('id', $deleted_ids)
+        ->get();
+
+        foreach ($attachments as $attachment) {
+            $attachment->delete();
+        }
         /**
          * @var \Illuminate\Http\UploadedFile[] $files
          */

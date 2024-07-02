@@ -31,4 +31,11 @@ class UpdatePostRequest extends StorePostRequest
 
         return $post->user_id === auth()->user()->id;
     }
+    public function rules(): array
+    {
+       return array_merge(parent::rules(), [
+        'deleted_file_ids' => 'array',
+        'deleted_file_ids.*' => 'numeric'
+       ]);
+    }
 }

@@ -177,7 +177,6 @@
                     <div class="p-4">
                         <PostUserInfo :post="post" :show-time="false" class="mb-4"/>
                         <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
-                        <pre>{{  form.deleted_file_ids }}</pre>
                         <div class="grid gap-3 my-3"
                         :class="[
                             computedAttachments.length === 1 ? 'grid-cols-1' :  'grid-cols-2'
