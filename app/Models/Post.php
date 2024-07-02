@@ -30,6 +30,6 @@ class Post extends Model
 
     public function postAttachments(): HasMany
     {
-        return $this->hasMany(PostAttachment::class);
+        return $this->hasMany(PostAttachment::class)->latest();
     }
 }

@@ -82,6 +82,8 @@ class PostController extends Controller
 
         $data = $request->validated();
 
+        // dd($data);
+
 
         $user = $request->user();
 

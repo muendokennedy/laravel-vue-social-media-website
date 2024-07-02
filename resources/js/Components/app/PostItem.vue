@@ -116,7 +116,7 @@ const deletePost = () => {
         ]">
             <template v-for="(attachment, index) in post.attachments.slice(0,4)" :key="index">
                 <div class="group aspect-square bg-blue-100 flex items-center justify-center text-gray-500 relative">
-                    <div v-if="index === 3" class="absolute inset-0 z-10 bg-black/60 text-white flex items-center justify-center text-2xl">
+                    <div v-if="index === 3 && post.attachments.length > 4" class="absolute inset-0 z-10 bg-black/60 text-white flex items-center justify-center text-2xl">
                         + {{ post.attachments.length - 4 }} more
                     </div>
                     <button class="flex z-10 opacity-0 group-hover:opacity-100 transition-all items-center text-gray-100 justify-center w-8 h-8 bg-gray-700 hover:bg-gray-800 rounded absolute top-2 right-2 cursor-pointer">

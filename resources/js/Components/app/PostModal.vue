@@ -17,10 +17,10 @@
     })
 
     const form = useForm({
-        id: null,
         body: '',
         attachments: [],
-        deleted_file_ids: []
+        deleted_file_ids: [],
+        _method: 'POST'
     })
 
     const attachmentFiles = ref([])
@@ -53,8 +53,8 @@
         form.attachments = attachmentFiles.value.map(myFile => myFile.file)
 
         if(props.post.id){
-            form.id = props.post.id
-            form.put(route('post.update', props.post), {
+            form._method = 'PUT'
+            form.post(route('post.update', props.post), {
                 onSuccess: () => {
                     show.value = false
                     closeModal()

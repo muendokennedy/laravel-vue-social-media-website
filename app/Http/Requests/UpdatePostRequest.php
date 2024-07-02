@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\File;
 
 class UpdatePostRequest extends StorePostRequest
 {
@@ -21,11 +22,10 @@ class UpdatePostRequest extends StorePostRequest
         //     'id' => $this->input('id'),
         //     'user_id' => auth()->user()->id
         // ])->first();
-       dd( $this->all());
 
         $post = $this->route('post');
 
-        // dd($this->route('post'));
+        // dd($this->all());
 
         // return !!$post;
 
