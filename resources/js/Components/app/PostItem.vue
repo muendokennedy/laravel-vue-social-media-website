@@ -119,9 +119,9 @@ const deletePost = () => {
                     <div v-if="index === 3 && post.attachments.length > 4" class="absolute inset-0 z-10 bg-black/60 text-white flex items-center justify-center text-2xl">
                         + {{ post.attachments.length - 4 }} more
                     </div>
-                    <button class="flex z-10 opacity-0 group-hover:opacity-100 transition-all items-center text-gray-100 justify-center w-8 h-8 bg-gray-700 hover:bg-gray-800 rounded absolute top-2 right-2 cursor-pointer">
+                    <a :href="route('post.download', attachment)" class="flex z-10 opacity-0 group-hover:opacity-100 transition-all items-center text-gray-100 justify-center w-8 h-8 bg-gray-700 hover:bg-gray-800 rounded absolute top-2 right-2 cursor-pointer">
                         <ArrowDownTrayIcon class="size-4"/>
-                    </button>
+                    </a>
                     <img v-if="isImage(attachment)" :src="attachment.url" alt="" class="object-cover w-full h-full">
                     <template v-else>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 text-gray-500">
