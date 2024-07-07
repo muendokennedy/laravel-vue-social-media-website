@@ -20,6 +20,14 @@ class StorePostRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+    public static array $extensions = [
+        'jpg', 'jpeg', 'png', 'gif', 'webp',
+        'mp3', 'wav', 'mp4',
+        'doc', 'docx', 'pdf', 'csv', 'xls', 'xlsx',
+        'zip'
+    ];
+
+
     public function rules(): array
     {
         return [
@@ -28,12 +36,7 @@ class StorePostRequest extends FormRequest
             'attachments' => 'array | max:50',
             'attachments.*' => [
                 'file',
-                File::types([
-                    'jpg', 'jpeg', 'png', 'gif', 'webp',
-                    'mp3', 'wav', 'mp4',
-                    'doc', 'docx', 'pdf', 'csv', 'xls', 'xlsx',
-                    'zip'
-                    ])->max(500 * 1024 * 1024)
+                File::types(self::$extensions)->max(500 * 1024 * 1024)
                 ],
             'user_id' => 'numeric'
         ];
@@ -45,6 +48,13 @@ class StorePostRequest extends FormRequest
             'user_id' => auth()->user()->id,
             'body' => $this->input('body') ?: ''
         ]);
+    }
+
+    public function messages()
+    {
+       return [
+        'attachments.*' => 'invalid file'
+       ];
     }
 
 }
