@@ -194,7 +194,7 @@
                                     </button>
                                     <img v-if="isImage(myFile.file ?? myFile)" :src="myFile.url" alt="" class="object-cover w-full h-full" :class="myFile.deleted ? 'opacity-50' : ''">
                                     <div v-else class="flex justify-center items-center flex-col" :class="myFile.deleted ? 'opacity-50' : ''">
-                                        <PaperClipIcon class="w-10 h-10 mb-3"/>
+                                        <PaperClipIcon class="size-10 mb-3"/>
                                         <small class="text-center">{{ (myFile.file ?? myFile).name }}</small>
                                     </div>
                                 </div>
@@ -205,14 +205,14 @@
                       <button
                         type="button"
                         class="relative flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-full">
-                        <PaperClipIcon class="h-4 w-4 mr-2"/>
+                        <PaperClipIcon class="size-4 mr-2"/>
                         Attach Files
                         <input @click.stop @change="onAttachmentChoose" type="file" multiple class="absolute inset-0 opacity-0">
                       </button>
                       <button @click="submit"
                         type="button"
                         class="flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-full">
-                        <BookmarkIcon class="h-4 w-4 mr-2"/>
+                        <BookmarkIcon class="size-4 mr-2"/>
                         submit
                       </button>
                     </div>

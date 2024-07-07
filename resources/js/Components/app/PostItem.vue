@@ -1,7 +1,7 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
+import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon } from '@heroicons/vue/20/solid'
 import { ChatBubbleLeftRightIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
 import PostUserInfo from '@/Components/app/PostUserInfo.vue'
 import { router } from '@inertiajs/vue3'
@@ -11,7 +11,7 @@ const props = defineProps({
     post: Object,
 })
 
-const emit = defineEmits(['editClick'])
+const emit = defineEmits(['editClick', 'attachmentClick'])
 
 const openEditModel = () => {
     emit('editClick', props.post)
@@ -23,6 +23,10 @@ const deletePost = () => {
             preserveScroll: true
         })
     }
+}
+
+const openAttachment = (index) => {
+    emit('attachmentClick', props.post, index)
 }
 
 </script>
@@ -115,7 +119,7 @@ const deletePost = () => {
             post.attachments.length === 1 ? 'grid-cols-1' :  'grid-cols-2'
         ]">
             <template v-for="(attachment, index) in post.attachments.slice(0,4)" :key="index">
-                <div class="group aspect-square bg-blue-100 flex items-center justify-center text-gray-500 relative">
+                <div @click="openAttachment(index)" class="cursor-pointer group aspect-square bg-blue-100 flex items-center justify-center text-gray-500 relative">
                     <div v-if="index === 3 && post.attachments.length > 4" class="absolute inset-0 z-10 bg-black/60 text-white flex items-center justify-center text-2xl">
                         + {{ post.attachments.length - 4 }} more
                     </div>
@@ -123,12 +127,10 @@ const deletePost = () => {
                         <ArrowDownTrayIcon class="size-4"/>
                     </a>
                     <img v-if="isImage(attachment)" :src="attachment.url" alt="" class="object-cover w-full h-full">
-                    <template v-else>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 text-gray-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                        </svg>
+                    <div v-else class="flex flex-col items-center justify-center">
+                        <PaperClipIcon class="size-10 mr-2"/>
                         <small>{{ attachment.name }}</small>
-                    </template>
+                    </div>
                 </div>
             </template>
         </div>
