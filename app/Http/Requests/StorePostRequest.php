@@ -33,10 +33,23 @@ class StorePostRequest extends FormRequest
         return [
             //
             'body' => 'nullable | string',
-            'attachments' => 'array | max:50',
+            'attachments' => [
+                'array',
+                'max:50',
+                function($attribute, $value, $fail){
+                    // Custom rule to check the total size of all files
+                    $totalSize = collect($value)->sum(function($file){
+                        return $file->getSize();
+                    });
+
+                    if($totalSize > 1024 * 1024 * 1024){
+                        $fail('The total size of all files must not exceed 1GB');
+                    }
+                }
+            ],
             'attachments.*' => [
                 'file',
-                File::types(self::$extensions)->max(500 * 1024 * 1024)
+                File::types(self::$extensions)
                 ],
             'user_id' => 'numeric'
         ];
@@ -53,7 +66,8 @@ class StorePostRequest extends FormRequest
     public function messages()
     {
        return [
-        'attachments.*' => 'invalid file'
+        'attachments.*.file' => 'Each attachment must be a file',
+        'attachments.*.mimes' => 'Invalid file type for attachment.'
        ];
     }
 

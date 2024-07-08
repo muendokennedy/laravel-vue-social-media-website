@@ -24,7 +24,7 @@
     })
 
     const attachmentFiles = ref([])
-    const showExtensionText = ref(false)
+    const formErrors = ref({})
 
     watch(() => props.post, () => {
             form.body = props.post.body || ''
@@ -45,8 +45,8 @@
 
     const resetModal = () => {
         form.reset()
+        formErrors.value = {}
         attachmentFiles.value = []
-        showExtensionText.value = false
         attachmentErrors.value = []
         if(props.post.attachments){
             props.post.attachments.forEach(file => file.deleted = false)
@@ -84,6 +84,7 @@
     }
 
     const processErrors = (errors) => {
+        formErrors.value = errors
         for(const key in errors){
             if(key.includes('.')){
                 const [ field, index ] = key.split('.')
@@ -105,19 +106,7 @@
     const attachmentExtensions = usePage().props.attachmentExtensions
 
     const onAttachmentChoose = async (event) => {
-
-        showExtensionText.value = false
-
         for(const file of event.target.files){
-
-            let [type, ext] = file.type.split('/')
-
-            ext = ext.toLowerCase()
-
-            if(!attachmentExtensions.includes(ext)){
-                showExtensionText.value = true
-            }
-
             const myFile = {
                 file,
             }
@@ -161,6 +150,21 @@
 
     const computedAttachments = computed(() => {
             return [...attachmentFiles.value, ...(props.post.attachments || [])]
+    })
+
+    const showExtensionText = computed(() => {
+        for(let myFile of attachmentFiles.value){
+
+            let [type, ext] = myFile.file.type.split('/')
+
+            ext = ext.toLowerCase()
+
+            if(!attachmentExtensions.includes(ext)){
+                return true
+            }
+        }
+        console.log(attachmentFiles.value)
+        return false
     })
 
     const undoDelete = (file) => {
@@ -218,6 +222,9 @@
                         <div v-if="showExtensionText" class="border-l-4 border-amber-500 py-2 px-3 bg-amber-100 mt-3 text-gray-800">
                             File must be one of the following extensions:
                             {{ $page.props.attachmentExtensions.join(', ') }}
+                        </div>
+                        <div v-if="formErrors.attachments" class="border-l-4 border-red-500 py-2 px-3 bg-red-100 mt-3 text-gray-800">
+                            {{ formErrors.attachments }}
                         </div>
                         <div class="grid gap-3 my-3"
                         :class="[
