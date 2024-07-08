@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Enums\PostReactionEnum;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\PostAttachment;
+use App\Models\PostReaction;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -162,5 +166,40 @@ class PostController extends Controller
        // Check if the user has permission to download that attachment
 
        return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
+    }
+
+    public function postReaction(Post $post, Request $request)
+    {
+       $user = auth()->user();
+
+       $data = $request->validate([
+        'reaction' => [Rule::enum(PostReactionEnum::class)]
+       ]);
+
+       $userId = $user->id;
+
+       $reaction = PostReaction::where([
+        'user_id' => $userId,
+        'post_id' => $post->id
+       ])->first();
+
+       if($reaction){
+        $hasReaction = false;
+        $reaction->delete();
+       } else {
+        $hasReaction = true;
+           PostReaction::create([
+            'post_id' => $post->id,
+            'user_id' => $userId,
+            'type' => $data['reaction']
+           ]);
+       }
+
+       $reactions = PostReaction::where('post_id', $post->id)->count();
+
+       return response([
+        'num_of_reactions' =>  $reactions,
+        'current_user_has_reaction' => $hasReaction
+       ]);
     }
 }

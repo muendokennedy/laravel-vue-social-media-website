@@ -24,7 +24,9 @@ class PostResource extends JsonResource
             'time_difference' => $this->created_at->diffInSeconds($this->updated_at),
             'user' => new UserResource($this->user),
             'group' => $this->group,
-            'attachments' => PostAttachmentResource::collection($this->postAttachments)
+            'attachments' => PostAttachmentResource::collection($this->postAttachments),
+            'num_of_reactions' => $this->reactions_count,
+            'current_user_has_reaction' => $this->reactions->count() > 0
         ];
     }
 }
