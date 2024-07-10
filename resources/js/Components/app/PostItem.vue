@@ -4,13 +4,20 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon } from '@heroicons/vue/20/solid'
 import { ChatBubbleLeftRightIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
 import PostUserInfo from '@/Components/app/PostUserInfo.vue'
-import { router } from '@inertiajs/vue3'
+import { router, usePage } from '@inertiajs/vue3'
 import { isImage } from '@/helpers.js'
 import axiosClient from '@/axiosClient.js'
+import InputTextarea from '@/Components/InputTextarea.vue'
+import IndigoButton from '@/Components/app/IndigoButton.vue'
+import { ref } from 'vue'
 
 const props = defineProps({
     post: Object,
 })
+
+const newCommentText = ref('')
+
+const authUser = usePage().props.auth.user
 
 const emit = defineEmits(['editClick', 'attachmentClick'])
 
@@ -36,6 +43,19 @@ const sendReaction = () => {
     }).then(({data}) => {
         props.post.current_user_has_reaction = data.current_user_has_reaction,
         props.post.num_of_reactions = data.num_of_reactions
+    })
+}
+
+const toggleCommentsSection = () => {
+
+}
+
+const createComment = () => {
+    axiosClient.post(route('post.comment.create', props.post), {
+        comment: newCommentText.value
+    }).then(({data}) => {
+        newCommentText.value = ''
+        console.log(data)
     })
 }
 
@@ -144,20 +164,59 @@ const sendReaction = () => {
                 </div>
             </template>
         </div>
-        <div class="flex gap-2">
-            <button @click="sendReaction" class="text-gray-800 flex items-center justify-center bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg"
-            :class="[
-                post.current_user_has_reaction ? 'bg-sky-100 hover:bg-sky-200' : 'bg-gray-100 hover:bg-gray-200'
-            ]">
-                <HandThumbUpIcon class="size-6"/>
-                <span class="mr-2">{{ post.num_of_reactions }}</span>
-                {{post.current_user_has_reaction ? 'Unlike' : 'Like'}}
-            </button>
-            <button class="text-gray-800 flex items-center justify-center bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg">
-                <ChatBubbleLeftRightIcon class="size-6"/>
-                Comment
-            </button>
-        </div>
+            <Disclosure v-slot="{ open }">
+                <div class="flex gap-2">
+                    <button @click="sendReaction" class="text-gray-800 flex items-center justify-center bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg"
+                    :class="[
+                        post.current_user_has_reaction ? 'bg-sky-100 hover:bg-sky-200' : 'bg-gray-100 hover:bg-gray-200'
+                    ]">
+                        <HandThumbUpIcon class="size-6"/>
+                        <span class="mr-2">{{ post.num_of_reactions }}</span>
+                        {{post.current_user_has_reaction ? 'Unlike' : 'Like'}}
+                    </button>
+                    <DisclosureButton @click="toggleCommentsSection"
+                        class="text-gray-800 flex items-center justify-center bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg"
+                        >
+                        <ChatBubbleLeftRightIcon class="size-6"/>
+                        <span class="mr-2">{{ post.num_of_comments }}</span>
+                        Comment
+                    </DisclosureButton>
+                </div>
+
+                <DisclosurePanel class="mt-3">
+                    <div class="flex gap-2 mb-3">
+                        <a href="javascript:void(0)">
+                                    <img :src="authUser.avatar_url" alt="" class="w-10 rounded-full border border-2 hover:border-blue-500 transition-all">
+                        </a>
+                        <div class="flex-1 flex gap-2">
+                            <InputTextarea v-model="newCommentText" rows="1" class="w-full overflow-auto resize-none max-h-40" placeholder="Enter your comment here..."/>
+                            <IndigoButton @click="createComment" class="w-fit h-10 text-nowrap">Add comment</IndigoButton>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <div v-for="(comment, index) in post.latestComments" :key="index" class="mb-4">
+                                <div class="flex gap-2">
+                                    <a href="javascript:void(0)">
+                                                <img :src="comment.user.avatar_url" alt="" class="w-10 rounded-full border border-2 hover:border-blue-500 transition-all">
+                                    </a>
+                                    <div>
+                                        <h4 class="font-bold">
+                                            <a href="javascript:void(0)" class="hover:underline">
+                                            {{ comment.user.name }}
+                                            </a>
+                                        </h4>
+                                        <small  class="text-gray-400 text-xs">Updated {{ comment.updated_at }}</small>
+                                    </div>
+                                </div>
+                                <small class="flex flex-1 ml-12 text-sm">
+                                    {{ comment.comment }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </DisclosurePanel>
+            </Disclosure>
     </div>
 </template>
 <style scoped>

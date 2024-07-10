@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const model = defineModel({
     type: String,
@@ -23,6 +23,12 @@ onMounted(() => {
     adjustTextareaHeight()
 });
 
+watch(() => props.modelValue, () => {
+    setTimeout(() => {
+        adjustTextareaHeight()
+    }, 10)
+})
+
 defineExpose({ focus: () => input.value.focus() });
 
 const onInputChange = () => {
@@ -32,7 +38,7 @@ const onInputChange = () => {
 const adjustTextareaHeight = () => {
     if(props.autoResize){
         input.value.style.height = 'auto'
-        input.value.style.height = input.value.scrollHeight + 'px'
+        input.value.style.height = (input.value.scrollHeight) + 2 + 'px'
     }
 }
 
