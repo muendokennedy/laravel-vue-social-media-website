@@ -29,7 +29,7 @@ watch(() => props.post.body, () => {
 <template>
         <div class="flex items-center gap-2">
         <a href="javascript:void(0)">
-                    <img :src="post.user.avatar_url" alt="" class="w-10 rounded-full border border-2 hover:border-blue-500 transition-all">
+                    <img :src="post.user.avatar_url" alt="" class="w-10 h-10 rounded-full border border-2 hover:border-blue-500 transition-all">
         </a>
         <div>
             <h4 class="font-bold">

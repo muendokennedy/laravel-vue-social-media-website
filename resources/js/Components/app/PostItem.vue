@@ -1,9 +1,10 @@
 <script setup>
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon } from '@heroicons/vue/20/solid'
 import { ChatBubbleLeftRightIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
 import PostUserInfo from '@/Components/app/PostUserInfo.vue'
+import ReadMoreReadLess from '@/Components/app/ReadMoreReadLess.vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { isImage } from '@/helpers.js'
 import axiosClient from '@/axiosClient.js'
@@ -55,7 +56,8 @@ const createComment = () => {
         comment: newCommentText.value
     }).then(({data}) => {
         newCommentText.value = ''
-        console.log(data)
+        props.post.latestComments.unshift(data)
+        props.post.num_of_comments++
     })
 }
 
@@ -130,19 +132,7 @@ const createComment = () => {
                 </Menu>
         </div>
         <div class="mb-3">
-            <Disclosure v-slot="{ open }">
-                <div class="ck-content-output" v-if="!open" v-html="post.body.substring(0, 200)"/>
-                <template v-if="post.body.length > 200">
-                    <DisclosurePanel>
-                        <div class="ck-content-output" v-html="post.body"/>
-                    </DisclosurePanel>
-                    <div class="flex justify-end">
-                        <DisclosureButton class="text-blue-500 hover:underline">
-                            {{ open ? 'Read Less' : 'Read More'}}
-                        </DisclosureButton>
-                    </div>
-                </template>
-            </Disclosure>
+            <ReadMoreReadLess :content="post.body"/>
         </div>
         <div class="grid gap-3 mb-3"
         :class="[
@@ -166,31 +156,36 @@ const createComment = () => {
         </div>
             <Disclosure v-slot="{ open }">
                 <div class="flex gap-2">
-                    <button @click="sendReaction" class="text-gray-800 flex items-center justify-center bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg"
+                    <button @click="sendReaction" class="text-gray-800 flex items-center justify-between bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg"
                     :class="[
                         post.current_user_has_reaction ? 'bg-sky-100 hover:bg-sky-200' : 'bg-gray-100 hover:bg-gray-200'
                     ]">
-                        <HandThumbUpIcon class="size-6"/>
+                    <div class="flex flex-1">
                         <span class="mr-2">{{ post.num_of_reactions }}</span>
+                        {{ post.num_of_reactions == 1 ? 'Like' : 'Likes' }}
+                    </div>
+                    <div class="flex flex-1 gap-2">
+                        <HandThumbUpIcon class="size-6"/>
                         {{post.current_user_has_reaction ? 'Unlike' : 'Like'}}
+                    </div>
                     </button>
                     <DisclosureButton @click="toggleCommentsSection"
                         class="text-gray-800 flex items-center justify-center bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg"
                         >
                         <ChatBubbleLeftRightIcon class="size-6"/>
                         <span class="mr-2">{{ post.num_of_comments }}</span>
-                        Comment
+                        {{ post.num_of_comments == 1 ? 'Comment' : 'Comments' }}
                     </DisclosureButton>
                 </div>
 
                 <DisclosurePanel class="mt-3">
                     <div class="flex gap-2 mb-3">
                         <a href="javascript:void(0)">
-                                    <img :src="authUser.avatar_url" alt="" class="w-10 rounded-full border border-2 hover:border-blue-500 transition-all">
+                                    <img :src="authUser.avatar_url" alt="" class="w-10 h-10 object-cover rounded-full border border-2 hover:border-blue-500 transition-all">
                         </a>
                         <div class="flex-1 flex gap-2">
                             <InputTextarea v-model="newCommentText" rows="1" class="w-full overflow-auto resize-none max-h-40" placeholder="Enter your comment here..."/>
-                            <IndigoButton @click="createComment" class="w-fit h-10 text-nowrap">Add comment</IndigoButton>
+                            <IndigoButton @click="createComment" class="w-40 h-10 text-nowrap">Add comment</IndigoButton>
                         </div>
                     </div>
                     <div>
@@ -198,7 +193,7 @@ const createComment = () => {
                             <div v-for="(comment, index) in post.latestComments" :key="index" class="mb-4">
                                 <div class="flex gap-2">
                                     <a href="javascript:void(0)">
-                                                <img :src="comment.user.avatar_url" alt="" class="w-10 rounded-full border border-2 hover:border-blue-500 transition-all">
+                                                <img :src="comment.user.avatar_url" alt="" class="w-10 h-10 object-cover rounded-full border border-2 hover:border-blue-500 transition-all">
                                     </a>
                                     <div>
                                         <h4 class="font-bold">
@@ -209,9 +204,9 @@ const createComment = () => {
                                         <small  class="text-gray-400 text-xs">Updated {{ comment.updated_at }}</small>
                                     </div>
                                 </div>
-                                <small class="flex flex-1 ml-12 text-sm">
-                                    {{ comment.comment }}
-                                </small>
+                                <div class="flex-1 ml-12 text-sm">
+                                    <ReadMoreReadLess :content="comment.comment"/>
+                                </div>
                             </div>
                         </div>
                     </div>

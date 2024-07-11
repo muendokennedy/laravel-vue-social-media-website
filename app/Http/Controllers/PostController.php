@@ -213,7 +213,7 @@ class PostController extends Controller
 
         $comment = Comment::create([
             'post_id' => $post->id,
-            'comment' => $data['comment'],
+            'comment' => nl2br($data['comment']),
             'user_id' => auth()->user()->id
         ]);
 
