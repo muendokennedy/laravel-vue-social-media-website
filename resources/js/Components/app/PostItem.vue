@@ -10,6 +10,8 @@ import { isImage } from '@/helpers.js'
 import axiosClient from '@/axiosClient.js'
 import InputTextarea from '@/Components/InputTextarea.vue'
 import IndigoButton from '@/Components/app/IndigoButton.vue'
+import EditDeleteDropdown from '@/Components/app/EditDeleteDropdown.vue'
+import DangerButton from '@/Components/DangerButton.vue'
 import { ref } from 'vue'
 
 const props = defineProps({
@@ -19,6 +21,8 @@ const props = defineProps({
 const newCommentText = ref('')
 
 const authUser = usePage().props.auth.user
+
+const editingComment = ref(null)
 
 const emit = defineEmits(['editClick', 'attachmentClick'])
 
@@ -47,10 +51,6 @@ const sendReaction = () => {
     })
 }
 
-const toggleCommentsSection = () => {
-
-}
-
 const createComment = () => {
     axiosClient.post(route('post.comment.create', props.post), {
         comment: newCommentText.value
@@ -61,75 +61,41 @@ const createComment = () => {
     })
 }
 
+const deleteComment = (comment) => {
+    if(!window.confirm('Are sure you want to delete this comment?')){
+        return false
+    }
+    axiosClient.delete(route('post.comment.delete', comment.id)).then(({data}) => {
+        props.post.latestComments = props.post.latestComments.filter(c => c.id !== comment.id)
+        props.post.num_of_comments--
+    })
+}
+
+const startCommentEdit = (comment) => {
+   editingComment.value = {
+    id: comment.id,
+    comment: comment.comment.replace(/<br\s*\/?>/gi, '\n')
+   }
+}
+
+const updateComment = () => {
+    axiosClient.put(route('post.comment.update', editingComment.value.id), editingComment.value).then(({data}) => {
+        editingComment.value = null
+        props.post.latestComments = props.post.latestComments.map((c) => {
+            if(c.id === data.id){
+                return data
+            }
+            return c
+        })
+    })
+}
+
 </script>
 <template>
     <div class="bg-white rounded p-4 mb-3">
         <div class="flex justify-between mb-3">
             <PostUserInfo :post="post" class="mb-4"/>
-                <Menu as="div" class="z-10 relative inline-block text-left">
-                <div>
-                    <MenuButton
-                    class="w-8 h-8 rounded-full hover:bg-black/5 transition flex items-center justify-center"
-                    >
-                    <EllipsisVerticalIcon
-                        class="h-5 w-5"
-                        aria-hidden="true"
-                    />
-                    </MenuButton>
-                </div>
-
-                <transition
-                    enter-active-class="transition duration-100 ease-out"
-                    enter-from-class="transform scale-95 opacity-0"
-                    enter-to-class="transform scale-100 opacity-100"
-                    leave-active-class="transition duration-75 ease-in"
-                    leave-from-class="transform scale-100 opacity-100"
-                    leave-to-class="transform scale-95 opacity-0"
-                >
-                    <MenuItems
-                    class="absolute right-0 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
-                    >
-                    <div class="px-1 py-1">
-                        <MenuItem v-slot="{ active }">
-                        <button
-
-                        @click="openEditModel"
-
-                            :class="[
-                            active ? 'bg-indigo-500 text-white' : 'text-gray-900',
-                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]"
-                        >
-                            <PencilIcon
-                            :active="active"
-                            class="mr-2 h-5 w-5 text-indigo-400"
-                            aria-hidden="true"
-                            />
-                            Edit
-                        </button>
-                        </MenuItem>
-                        <MenuItem v-slot="{ active }">
-                        <button
-
-                        @click="deletePost"
-
-                            :class="[
-                            active ? 'bg-indigo-500 text-white' : 'text-gray-900',
-                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]"
-                        >
-                            <TrashIcon
-                            :active="active"
-                            class="mr-2 h-5 w-5 text-indigo-400"
-                            aria-hidden="true"
-                            />
-                            Delete
-                        </button>
-                        </MenuItem>
-                    </div>
-                    </MenuItems>
-                </transition>
-                </Menu>
+            <EditDeleteDropdown :user="post.user" @edit="openEditModel" @delete="deletePost"/>
         </div>
         <div class="mb-3">
             <ReadMoreReadLess :content="post.body"/>
@@ -169,7 +135,7 @@ const createComment = () => {
                         {{post.current_user_has_reaction ? 'Unlike' : 'Like'}}
                     </div>
                     </button>
-                    <DisclosureButton @click="toggleCommentsSection"
+                    <DisclosureButton
                         class="text-gray-800 flex items-center justify-center bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg"
                         >
                         <ChatBubbleLeftRightIcon class="size-6"/>
@@ -191,20 +157,30 @@ const createComment = () => {
                     <div>
                         <div>
                             <div v-for="(comment, index) in post.latestComments" :key="index" class="mb-4">
-                                <div class="flex gap-2">
-                                    <a href="javascript:void(0)">
+                                <div class="flex gap-2 justify-between">
+                                    <div class="flex gap-2">
+                                        <a href="javascript:void(0)">
                                                 <img :src="comment.user.avatar_url" alt="" class="w-10 h-10 object-cover rounded-full border border-2 hover:border-blue-500 transition-all">
-                                    </a>
-                                    <div>
-                                        <h4 class="font-bold">
-                                            <a href="javascript:void(0)" class="hover:underline">
-                                            {{ comment.user.name }}
-                                            </a>
-                                        </h4>
-                                        <small  class="text-gray-400 text-xs">Updated {{ comment.updated_at }}</small>
+                                        </a>
+                                        <div>
+                                            <h4 class="font-bold">
+                                                <a href="javascript:void(0)" class="hover:underline">
+                                                {{ comment.user.name }}
+                                                </a>
+                                            </h4>
+                                            <small  class="text-gray-400 text-xs">Updated {{ comment.updated_at }}</small>
+                                        </div>
+                                    </div>
+                                    <EditDeleteDropdown :user="comment.user" @edit="startCommentEdit(comment)" @delete="deleteComment(comment)"/>
+                                </div>
+                                <div v-if="editingComment && editingComment.id === comment.id" class="ml-12 text-sm">
+                                    <InputTextarea  v-model="editingComment.comment" rows="1" class="w-full overflow-auto resize-none max-h-40" placeholder="Enter your comment here..."/>
+                                    <div class="flex gap-2 justify-end">
+                                        <IndigoButton @click="updateComment" class="w-40 h-10 text-nowrap">Edit comment</IndigoButton>
+                                        <DangerButton @click="editingComment = null">Cancel</DangerButton>
                                     </div>
                                 </div>
-                                <div class="flex-1 ml-12 text-sm">
+                                <div v-else  class="ml-12 text-sm">
                                     <ReadMoreReadLess :content="comment.comment"/>
                                 </div>
                             </div>

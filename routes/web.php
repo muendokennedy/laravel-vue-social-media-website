@@ -21,6 +21,8 @@ Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('pro
      Route::get('/post/download/{attachment}', [PostController::class, 'downloadAttachment'])->name('post.download');
      Route::post('/post/{post}/reaction', [PostController::class, 'postReaction'])->name('post.reaction');
      Route::post('/post/{post}/comment', [PostController::class, 'createComment'])->name('post.comment.create');
+     Route::delete('/comment/{comment}', [PostController::class, 'deleteComment'])->name('post.comment.delete');
+     Route::put('/comment/{comment}', [PostController::class, 'updateComment'])->name('post.comment.update');
  });
 
 require __DIR__.'/auth.php';
