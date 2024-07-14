@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Enums\PostReactionEnum;
+use App\Http\Enums\ReactionEnum;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Requests\UpdatePostRequest;
@@ -10,7 +10,7 @@ use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostAttachment;
-use App\Models\PostReaction;
+use App\Models\Reaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -171,19 +171,20 @@ class PostController extends Controller
        return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
     }
 
-    public function postReaction(Post $post, Request $request)
+    public function Reaction(Post $post, Request $request)
     {
        $user = auth()->user();
 
        $data = $request->validate([
-        'reaction' => [Rule::enum(PostReactionEnum::class)]
+        'reaction' => [Rule::enum(ReactionEnum::class)]
        ]);
 
        $userId = $user->id;
 
-       $reaction = PostReaction::where([
+       $reaction = Reaction::where([
         'user_id' => $userId,
-        'post_id' => $post->id
+        'reactionable_id' => $post->id,
+        'reactionable_type' => Post::class,
        ])->first();
 
        if($reaction){
@@ -191,14 +192,19 @@ class PostController extends Controller
         $reaction->delete();
        } else {
         $hasReaction = true;
-           PostReaction::create([
-            'post_id' => $post->id,
+           Reaction::create([
+            'reactionable_id' => $post->id,
+            'reactionable_type' => Post::class,
             'user_id' => $userId,
             'type' => $data['reaction']
            ]);
        }
 
-       $reactions = PostReaction::where('post_id', $post->id)->count();
+
+       $reactions = Reaction::where([
+        'reactionable_id' => $post->id,
+        'reactionable_type' => Post::class,
+       ])->count();
 
        return response([
         'num_of_reactions' =>  $reactions,

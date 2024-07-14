@@ -90,6 +90,15 @@ const updateComment = () => {
     })
 }
 
+const sendCommentReaction = () => {
+    axiosClient.post(route('comment.reaction', props.post), {
+        reaction: 'like'
+    }).then(({data}) => {
+        props.post.current_user_has_reaction = data.current_user_has_reaction,
+        props.post.num_of_reactions = data.num_of_reactions
+    })
+}
+
 </script>
 <template>
     <div class="bg-white rounded p-4 mb-3">
