@@ -2,7 +2,7 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon } from '@heroicons/vue/20/solid'
-import { ChatBubbleLeftRightIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
+import { ChatBubbleLeftRightIcon, ChatBubbleLeftEllipsisIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
 import PostUserInfo from '@/Components/app/PostUserInfo.vue'
 import ReadMoreReadLess from '@/Components/app/ReadMoreReadLess.vue'
 import { router, usePage } from '@inertiajs/vue3'
@@ -120,7 +120,7 @@ const updateComment = () => {
                 </div>
             </template>
         </div>
-            <Disclosure v-slot="{ open }">
+            <Disclosure>
                 <div class="flex gap-2">
                     <button @click="sendReaction" class="text-gray-800 flex items-center justify-between bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg"
                     :class="[
@@ -173,15 +173,27 @@ const updateComment = () => {
                                     </div>
                                     <EditDeleteDropdown :user="comment.user" @edit="startCommentEdit(comment)" @delete="deleteComment(comment)"/>
                                 </div>
-                                <div v-if="editingComment && editingComment.id === comment.id" class="ml-12 text-sm">
-                                    <InputTextarea  v-model="editingComment.comment" rows="1" class="w-full overflow-auto resize-none max-h-40" placeholder="Enter your comment here..."/>
-                                    <div class="flex gap-2 justify-end">
-                                        <IndigoButton @click="updateComment" class="w-40 h-10 text-nowrap">Edit comment</IndigoButton>
-                                        <DangerButton @click="editingComment = null">Cancel</DangerButton>
+                                <div class="pl-12">
+                                    <div v-if="editingComment && editingComment.id === comment.id" class="text-sm">
+                                        <InputTextarea  v-model="editingComment.comment" rows="1" class="w-full overflow-auto resize-none max-h-40" placeholder="Enter your comment here..."/>
+                                        <div class="flex gap-2 justify-end">
+                                            <IndigoButton @click="updateComment" class="w-40 h-10 text-nowrap">Edit comment</IndigoButton>
+                                            <DangerButton @click="editingComment = null">Cancel</DangerButton>
+                                        </div>
                                     </div>
-                                </div>
-                                <div v-else  class="ml-12 text-sm">
-                                    <ReadMoreReadLess :content="comment.comment"/>
+                                    <div v-else  class="text-sm">
+                                        <ReadMoreReadLess :content="comment.comment"/>
+                                    </div>
+                                    <div class="mt-1 flex gap-2">
+                                        <button class="flex items-center text-xs text-indigo-500 p-1 rounded-lg hover:bg-indigo-100">
+                                            <HandThumbUpIcon class="size-3 mr-1"/>
+                                            like
+                                        </button>
+                                        <button class="flex items-center text-xs text-indigo-500 p-1 rounded-lg hover:bg-indigo-100">
+                                            <ChatBubbleLeftEllipsisIcon class="size-3 mr-1"/>
+                                            reply
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
