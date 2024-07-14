@@ -171,7 +171,7 @@ class PostController extends Controller
        return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
     }
 
-    public function Reaction(Post $post, Request $request)
+    public function postReaction(Post $post, Request $request)
     {
        $user = auth()->user();
 
@@ -248,5 +248,46 @@ class PostController extends Controller
        ]);
 
        return new CommentResource($comment);
+    }
+
+    public function commentReaction(Request $request, Comment $comment)
+    {
+       $user = auth()->user();
+
+       $data = $request->validate([
+        'reaction' => [Rule::enum(ReactionEnum::class)]
+       ]);
+
+       $userId = $user->id;
+
+       $reaction = Reaction::where([
+        'user_id' => $userId,
+        'reactionable_id' => $comment->id,
+        'reactionable_type' => Comment::class,
+       ])->first();
+
+       if($reaction){
+        $hasReaction = false;
+        $reaction->delete();
+       } else {
+        $hasReaction = true;
+           Reaction::create([
+            'reactionable_id' => $comment->id,
+            'reactionable_type' => Comment::class,
+            'user_id' => $userId,
+            'type' => $data['reaction']
+           ]);
+       }
+
+
+       $reactions = Reaction::where([
+        'reactionable_id' => $comment->id,
+        'reactionable_type' => Comment::class,
+       ])->count();
+
+       return response([
+        'num_of_reactions' =>  $reactions,
+        'current_user_has_reaction' => $hasReaction
+       ]);
     }
 }

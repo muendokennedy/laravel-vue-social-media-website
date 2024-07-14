@@ -65,7 +65,7 @@ const deleteComment = (comment) => {
     if(!window.confirm('Are sure you want to delete this comment?')){
         return false
     }
-    axiosClient.delete(route('post.comment.delete', comment.id)).then(({data}) => {
+    axiosClient.delete(route('comment.delete', comment.id)).then(({data}) => {
         props.post.latestComments = props.post.latestComments.filter(c => c.id !== comment.id)
         props.post.num_of_comments--
     })
@@ -79,7 +79,7 @@ const startCommentEdit = (comment) => {
 }
 
 const updateComment = () => {
-    axiosClient.put(route('post.comment.update', editingComment.value.id), editingComment.value).then(({data}) => {
+    axiosClient.put(route('comment.update', editingComment.value.id), editingComment.value).then(({data}) => {
         editingComment.value = null
         props.post.latestComments = props.post.latestComments.map((c) => {
             if(c.id === data.id){
@@ -90,12 +90,12 @@ const updateComment = () => {
     })
 }
 
-const sendCommentReaction = () => {
-    axiosClient.post(route('comment.reaction', props.post), {
+const sendCommentReaction = (comment) => {
+    axiosClient.post(route('comment.reaction', comment.id), {
         reaction: 'like'
     }).then(({data}) => {
-        props.post.current_user_has_reaction = data.current_user_has_reaction,
-        props.post.num_of_reactions = data.num_of_reactions
+        comment.current_user_has_reaction = data.current_user_has_reaction,
+        comment.num_of_reactions = data.num_of_reactions
     })
 }
 
@@ -194,9 +194,14 @@ const sendCommentReaction = () => {
                                         <ReadMoreReadLess :content="comment.comment"/>
                                     </div>
                                     <div class="mt-1 flex gap-2">
-                                        <button class="flex items-center text-xs text-indigo-500 p-1 rounded-lg hover:bg-indigo-100">
+                                        <button @click="sendCommentReaction(comment)" class="flex items-center text-xs text-indigo-500 p-1 rounded-lg"
+                                        :class="[
+                                                comment.current_user_has_reaction ? 'bg-indigo-50 hover:bg-indigo-100' : 'hover:bg-indigo-50'
+                                            ]"
+                                        >
                                             <HandThumbUpIcon class="size-3 mr-1"/>
-                                            like
+                                            <span class="mr-2">{{ comment.num_of_reactions }}</span>
+                                            {{comment.current_user_has_reaction ? 'Unlike' : 'like'}}
                                         </button>
                                         <button class="flex items-center text-xs text-indigo-500 p-1 rounded-lg hover:bg-indigo-100">
                                             <ChatBubbleLeftEllipsisIcon class="size-3 mr-1"/>
