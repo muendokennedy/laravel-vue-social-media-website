@@ -88,7 +88,7 @@ const sendReaction = () => {
                 </div>
 
                 <DisclosurePanel class="mt-3">
-                    <CommentList :post="post" :data="{comments: post.latestComments}"/>
+                    <CommentList :post="post" :data="{comments: post.comments}"/>
                 </DisclosurePanel>
             </Disclosure>
     </div>

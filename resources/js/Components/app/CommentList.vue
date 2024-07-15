@@ -34,15 +34,14 @@ const editingComment = ref(null)
 const createComment = () => {
     axiosClient.post(route('post.comment.create', props.post), {
         comment: newCommentText.value,
-        parent_id: props.parentComment.id ?? null
+        parent_id: props.parentComment?.id ?? null
     }).then(({data}) => {
         newCommentText.value = ''
         props.data.comments.unshift(data)
         if(props.parentComment){
             props.parentComment.num_of_comments++
-        } else {
-            props.post.num_of_comments++
         }
+        props.post.num_of_comments++
     })
 }
 
@@ -51,7 +50,12 @@ const deleteComment = (comment) => {
         return false
     }
     axiosClient.delete(route('comment.delete', comment.id)).then(({data}) => {
-        props.data.latestComments = props.data.latestComments.filter(c => c.id !== comment.id)
+
+        const commentIndex = props.data.comments.findIndex(c => c.id === comment.id)
+        props.data.comments.splice(commentIndex, 1)
+        if(props.parentComment){
+            props.parentComment.num_of_comments--
+        }
         props.post.num_of_comments--
     })
 }
