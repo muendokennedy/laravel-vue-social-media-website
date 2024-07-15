@@ -11,7 +11,6 @@ import InputTextarea from '@/Components/InputTextarea.vue'
 import IndigoButton from '@/Components/app/IndigoButton.vue'
 import EditDeleteDropdown from '@/Components/app/EditDeleteDropdown.vue'
 import PostAttachments from '@/Components/app/PostAttachments.vue'
-import DangerButton from '@/Components/DangerButton.vue'
 import CommentList from '@/Components/app/CommentList.vue'
 import { ref } from 'vue'
 
@@ -89,7 +88,7 @@ const sendReaction = () => {
                 </div>
 
                 <DisclosurePanel class="mt-3">
-                    <CommentList :post="post" :comments="comments"/>
+                    <CommentList :post="post" :data="{comments: post.latestComments}"/>
                 </DisclosurePanel>
             </Disclosure>
     </div>

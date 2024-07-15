@@ -5,16 +5,23 @@ import ReadMoreReadLess from '@/Components/app/ReadMoreReadLess.vue'
 import IndigoButton from '@/Components/app/IndigoButton.vue'
 import InputTextarea from '@/Components/InputTextarea.vue'
 import EditDeleteDropdown from '@/Components/app/EditDeleteDropdown.vue'
+import CommentList from '@/Components/app/CommentList.vue'
+import DangerButton from '@/Components/DangerButton.vue'
 import { usePage } from '@inertiajs/vue3'
 import { ref } from 'vue'
+import axiosClient from '@/axiosClient.js'
 
 
-defineProps({
+const props = defineProps({
     post: {
         type: Object
     },
-    comments: {
-        type: Array
+    data: {
+        type: Object
+    },
+    parentComment: {
+        type: [Object, null],
+        default: null
     }
 })
 
@@ -26,11 +33,16 @@ const editingComment = ref(null)
 
 const createComment = () => {
     axiosClient.post(route('post.comment.create', props.post), {
-        comment: newCommentText.value
+        comment: newCommentText.value,
+        parent_id: props.parentComment.id ?? null
     }).then(({data}) => {
         newCommentText.value = ''
-        props.post.latestComments.unshift(data)
-        props.post.num_of_comments++
+        props.data.comments.unshift(data)
+        if(props.parentComment){
+            props.parentComment.num_of_comments++
+        } else {
+            props.post.num_of_comments++
+        }
     })
 }
 
@@ -39,7 +51,7 @@ const deleteComment = (comment) => {
         return false
     }
     axiosClient.delete(route('comment.delete', comment.id)).then(({data}) => {
-        props.post.latestComments = props.post.latestComments.filter(c => c.id !== comment.id)
+        props.data.latestComments = props.data.latestComments.filter(c => c.id !== comment.id)
         props.post.num_of_comments--
     })
 }
@@ -54,7 +66,7 @@ const startCommentEdit = (comment) => {
 const updateComment = () => {
     axiosClient.put(route('comment.update', editingComment.value.id), editingComment.value).then(({data}) => {
         editingComment.value = null
-        props.post.latestComments = props.post.latestComments.map((c) => {
+        props.data.comments = props.data.comments.map((c) => {
             if(c.id === data.id){
                 return data
             }
@@ -86,7 +98,7 @@ const sendCommentReaction = (comment) => {
     </div>
     <div>
         <div>
-            <div v-for="(comment, index) in post.latestComments" :key="index" class="mb-4">
+            <div v-for="(comment, index) in data.comments" :key="index" class="mb-4">
                 <div class="flex gap-2 justify-between">
                     <div class="flex gap-2">
                         <a href="javascript:void(0)">
@@ -127,15 +139,12 @@ const sendCommentReaction = (comment) => {
                             </button>
                             <DisclosureButton class="flex items-center text-xs text-indigo-500 p-1 rounded-lg hover:bg-indigo-100">
                                 <ChatBubbleLeftEllipsisIcon class="size-3 mr-1"/>
-                                reply
+                                <span class="mr-2">{{ comment.num_of_comments }}</span>
+                                {{ comment.num_of_comments == 1 ? 'Comment' : 'Comments' }}
                             </DisclosureButton>
                         </div>
-                        <DisclosurePanel>
-                            <CommentLit :post="post" :comments="comment.comments"/>
-                            <div class="flex-1 flex gap-2 mt-2">
-                                <InputTextarea v-model="newCommentText" rows="1" class="w-full overflow-auto resize-none max-h-40" placeholder="Enter your comment here..."/>
-                                <IndigoButton @click="createComment" class="w-40 h-10 text-nowrap">Add Reply</IndigoButton>
-                            </div>
+                        <DisclosurePanel class="mt-3">
+                            <CommentList :post="post" :data="{comments: comment.comments}" :parent-comment="comment"/>
                         </DisclosurePanel>
                     </Disclosure>
                 </div>
