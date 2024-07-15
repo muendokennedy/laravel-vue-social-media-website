@@ -6,11 +6,11 @@ import { ChatBubbleLeftRightIcon, ChatBubbleLeftEllipsisIcon, HandThumbUpIcon } 
 import PostUserInfo from '@/Components/app/PostUserInfo.vue'
 import ReadMoreReadLess from '@/Components/app/ReadMoreReadLess.vue'
 import { router, usePage } from '@inertiajs/vue3'
-import { isImage } from '@/helpers.js'
 import axiosClient from '@/axiosClient.js'
 import InputTextarea from '@/Components/InputTextarea.vue'
 import IndigoButton from '@/Components/app/IndigoButton.vue'
 import EditDeleteDropdown from '@/Components/app/EditDeleteDropdown.vue'
+import PostAttachments from '@/Components/app/PostAttachments.vue'
 import DangerButton from '@/Components/DangerButton.vue'
 import { ref } from 'vue'
 
@@ -113,21 +113,7 @@ const sendCommentReaction = (comment) => {
         :class="[
             post.attachments.length === 1 ? 'grid-cols-1' :  'grid-cols-2'
         ]">
-            <template v-for="(attachment, index) in post.attachments.slice(0,4)" :key="index">
-                <div @click="openAttachment(index)" class="cursor-pointer group aspect-square bg-blue-100 flex items-center justify-center text-gray-500 relative">
-                    <div v-if="index === 3 && post.attachments.length > 4" class="absolute inset-0 z-10 bg-black/60 text-white flex items-center justify-center text-2xl">
-                        + {{ post.attachments.length - 4 }} more
-                    </div>
-                    <a @click.stop :href="route('post.download', attachment)" class="flex z-10 opacity-0 group-hover:opacity-100 transition-all items-center text-gray-100 justify-center w-8 h-8 bg-gray-700 hover:bg-gray-800 rounded absolute top-2 right-2 cursor-pointer">
-                        <ArrowDownTrayIcon class="size-4"/>
-                    </a>
-                    <img v-if="isImage(attachment)" :src="attachment.url" alt="" class="object-cover w-full h-full">
-                    <div v-else class="flex flex-col items-center justify-center">
-                        <PaperClipIcon class="size-10 mr-2"/>
-                        <small>{{ attachment.name }}</small>
-                    </div>
-                </div>
-            </template>
+        <PostAttachments :attachments="post.attachments" @attachmentClick="openAttachment"/>
         </div>
             <Disclosure>
                 <div class="flex gap-2">
@@ -207,6 +193,10 @@ const sendCommentReaction = (comment) => {
                                             <ChatBubbleLeftEllipsisIcon class="size-3 mr-1"/>
                                             reply
                                         </button>
+                                    </div>
+                                    <div class="flex-1 flex gap-2 mt-2">
+                                        <InputTextarea v-model="newCommentText" rows="1" class="w-full overflow-auto resize-none max-h-40" placeholder="Enter your comment here..."/>
+                                        <IndigoButton @click="createComment" class="w-40 h-10 text-nowrap">Add Reply</IndigoButton>
                                     </div>
                                 </div>
                             </div>
