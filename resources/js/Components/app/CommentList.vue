@@ -25,6 +25,8 @@ const props = defineProps({
     }
 })
 
+const emit = defineEmits(['commentCreate', 'commentDelete'])
+
 const authUser = usePage().props.auth.user
 
 const newCommentText = ref('')
@@ -42,6 +44,7 @@ const createComment = () => {
             props.parentComment.num_of_comments++
         }
         props.post.num_of_comments++
+        emit('commentCreate', data)
     })
 }
 
@@ -57,6 +60,7 @@ const deleteComment = (comment) => {
             props.parentComment.num_of_comments--
         }
         props.post.num_of_comments--
+        emit('commentDelete', comment)
     })
 }
 
@@ -86,6 +90,20 @@ const sendCommentReaction = (comment) => {
         comment.current_user_has_reaction = data.current_user_has_reaction,
         comment.num_of_reactions = data.num_of_reactions
     })
+}
+
+const onCommentCreate = (comment) => {
+    if(props.parentComment){
+        props.parentComment.num_of_comments++
+    }
+    emit('commentCreate', comment)
+}
+
+const onDeleteComment = (comment) => {
+    if(props.parentComment){
+        props.parentComment.num_of_comments--
+    }
+    emit('commentDelete', comment)
 }
 
 </script>
@@ -148,7 +166,7 @@ const sendCommentReaction = (comment) => {
                             </DisclosureButton>
                         </div>
                         <DisclosurePanel class="mt-3">
-                            <CommentList :post="post" :data="{comments: comment.comments}" :parent-comment="comment"/>
+                            <CommentList :post="post" :data="{comments: comment.comments}" :parent-comment="comment" @comment-create="onCommentCreate" @comment-delete="onDeleteComment"/>
                         </DisclosurePanel>
                     </Disclosure>
                 </div>
