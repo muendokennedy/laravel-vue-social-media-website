@@ -19,6 +19,10 @@ class Comment extends Model
         'parent_id'
     ];
 
+    public int $numOfComments = 0;
+
+    public array $childComments = [];
+
     public function user(): BelongsTo
     {
        return $this->belongsTo(User::class);
