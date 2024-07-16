@@ -101,3 +101,22 @@
     text-decoration: underline;
     cursor: pointer;
 }
+.comment-list::-webkit-scrollbar{
+    width: 0.5rem;
+    background: transparent;
+}
+.comment-list::-webkit-scrollbar-thumb{
+    border-radius: 0.4rem;
+    background: transparent;
+}
+.comment-list::-webkit-scrollbar-track{
+    background: transparent;
+
+}
+.comment-list:hover::-webkit-scrollbar-thumb{
+    background: #4f46e5;
+    border-radius: 0.4rem;
+}
+.comment-list:hover::-webkit-scrollbar-track{
+    background: #cbd5e0;
+}

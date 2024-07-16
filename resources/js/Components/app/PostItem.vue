@@ -87,7 +87,7 @@ const sendReaction = () => {
                     </DisclosureButton>
                 </div>
 
-                <DisclosurePanel class="mt-3">
+                <DisclosurePanel class="p-2 comment-list mt-3 max-h-96 overflow-auto">
                     <CommentList :post="post" :data="{comments: post.comments}"/>
                 </DisclosurePanel>
             </Disclosure>
