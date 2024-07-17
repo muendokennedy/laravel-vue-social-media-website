@@ -23,10 +23,16 @@ class HomeController extends Controller
                         'reactions' => function($query) use ($userId){
                         $query->where('user_id', $userId);
                     }])
-                    ->latest()->paginate(20);
+                    ->latest()->paginate(5);
+
+        $posts = PostResource::collection($posts);
+
+        if($request->wantsJson()){
+            return $posts;
+        }
 
         return Inertia::render('Home', [
-            'posts' => PostResource::collection($posts)
+            'posts' => $posts
         ]);
     }
 }
