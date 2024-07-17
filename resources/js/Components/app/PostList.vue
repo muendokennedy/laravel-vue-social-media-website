@@ -1,7 +1,7 @@
 <script setup>
 import PostItem from '@/Components/app/PostItem.vue'
 import PostModal from '@/Components/app/PostModal.vue'
-import { onUpdated, ref } from 'vue'
+import { ref } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import AttachmentPreviewModal from '@/Components/app/AttachmentPreviewModal.vue'
 import { onMounted } from 'vue'
