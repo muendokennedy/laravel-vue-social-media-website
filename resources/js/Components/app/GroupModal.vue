@@ -39,7 +39,13 @@
     }
 
     const submit = () => {
-        form.post(route(''))
+        form.post(route('group.create'), {
+            onSuccess: () => {
+                closeModal()
+            },
+            onError: () => {
+            }
+        })
     }
 
 </script>
