@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Enums\GroupUserRole;
+use App\Http\Enums\GroupUserStatus;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
+use App\Http\Resources\GroupResource;
 use App\Models\Group;
+use App\Models\GroupUser;
 
 class GroupController extends Controller
 {
@@ -29,9 +33,19 @@ class GroupController extends Controller
         $data['user_id'] = auth()->id();
         $data['deleted_by'] = $request->user()->id;
 
-        Group::create($data);
+        $group = Group::create($data);
 
-        return back();
+        $groupUserData = [
+            'status' => GroupUserStatus::APPROVED->value,
+            'role' => GroupUserRole::ADMIN->value,
+            'user_id' => auth()->id(),
+            'group_id' => $group->id,
+            'created_by' => auth()->id()
+        ];
+
+        $groupUser = GroupUser::create($groupUserData);
+
+        return response()->json(new GroupResource($group));
     }
 
     /**

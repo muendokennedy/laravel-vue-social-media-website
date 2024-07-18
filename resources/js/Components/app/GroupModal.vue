@@ -5,6 +5,7 @@
     import { useForm } from '@inertiajs/vue3'
     import TextInput from '@/Components/TextInput.vue'
     import Checkbox from '@/Components/Checkbox.vue'
+    import axiosClient from '@/axiosClient.js'
     import InputTextarea from '@/Components/InputTextarea.vue'
 
 
@@ -39,12 +40,10 @@
     }
 
     const submit = () => {
-        form.post(route('group.create'), {
-            onSuccess: () => {
-                closeModal()
-            },
-            onError: () => {
-            }
+        axiosClient.post(route('group.create'), form)
+        .then(response => {
+            console.log(response)
+            closeModal()
         })
     }
 
