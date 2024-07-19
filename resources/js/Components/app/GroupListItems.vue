@@ -4,8 +4,14 @@ import TextInput from '../TextInput.vue';
 import { ref } from 'vue';
 import GroupModal from '@/Components/app/GroupModal.vue'
 
+defineProps({
+    groups: Array
+})
+
 const showNewGroupModal = ref(false)
 const searchKeyword = ref('')
+
+
 
 </script>
 <template>
@@ -18,22 +24,7 @@ const searchKeyword = ref('')
             You are not joined to any groups
         </div>
         <div v-else>
-            <GroupItem title="Laravel Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Vue.js Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Laravel Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Vue.js Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Laravel Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Vue.js Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Laravel Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Vue.js Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Laravel Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Vue.js Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Laravel Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Vue.js Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Laravel Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Vue.js Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Laravel Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
-            <GroupItem title="Vue.js Developers" image="/man1.jpg" description="Lorem ipsum dolor sit amet consectetur adipisicing elit."/>
+            <GroupItem v-for="(group, index) in groups" :key="index" :group="group"/>
         </div>
     </div>
     <GroupModal v-model="showNewGroupModal"/>

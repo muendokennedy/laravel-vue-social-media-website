@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class GroupResource extends JsonResource
 {
@@ -17,7 +18,11 @@ class GroupResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'status' => $this->status,
+            'role' => $this->role,
             'slug' => $this->slug,
+            'thumbnail_url' => '/man1.jpg',
+            'description' => Str::words($this->about, 10),
             'auto_approval' => $this->auto_approval,
             'about' => $this->about,
             'user_id' => $this->user_id,

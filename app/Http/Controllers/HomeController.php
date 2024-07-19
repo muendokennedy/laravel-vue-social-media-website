@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Enums\GroupUserStatus;
+use App\Http\Resources\GroupResource;
 use App\Http\Resources\PostResource;
+use App\Models\Group;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,8 +34,16 @@ class HomeController extends Controller
             return $posts;
         }
 
+        $groups = Group::query()
+                    ->select(['groups.*', 'group_users.role', 'group_users.status'])
+                    ->join('group_users', 'group_users.group_id', 'groups.id')
+                    ->where('group_users.user_id', auth()->id())
+                    ->where('status', GroupUserStatus::APPROVED->value)
+                    ->get();
+
         return Inertia::render('Home', [
-            'posts' => $posts
+            'posts' => $posts,
+            'groups' => GroupResource::collection($groups)
         ]);
     }
 }
