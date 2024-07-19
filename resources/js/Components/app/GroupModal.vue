@@ -26,7 +26,7 @@
         set: (value) => emit('update:modelValue', value)
     })
 
-    const emit = defineEmits(['update:modelValue', 'hide'])
+    const emit = defineEmits(['update:modelValue', 'hide', 'create'])
 
     const closeModal = () => {
         show.value = false
@@ -41,9 +41,9 @@
 
     const submit = () => {
         axiosClient.post(route('group.create'), form)
-        .then(response => {
-            console.log(response)
+        .then(({data}) => {
             closeModal()
+            emit('create', data)
         })
     }
 

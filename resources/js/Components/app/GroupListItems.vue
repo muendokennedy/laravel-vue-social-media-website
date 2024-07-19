@@ -4,14 +4,16 @@ import TextInput from '../TextInput.vue';
 import { ref } from 'vue';
 import GroupModal from '@/Components/app/GroupModal.vue'
 
-defineProps({
+const props = defineProps({
     groups: Array
 })
 
 const showNewGroupModal = ref(false)
 const searchKeyword = ref('')
 
-
+const onGroupCreate = (group) => {
+    props.groups.unshift(group)
+}
 
 </script>
 <template>
@@ -27,5 +29,5 @@ const searchKeyword = ref('')
             <GroupItem v-for="(group, index) in groups" :key="index" :group="group"/>
         </div>
     </div>
-    <GroupModal v-model="showNewGroupModal"/>
+    <GroupModal v-model="showNewGroupModal" @create="onGroupCreate"/>
 </template>
