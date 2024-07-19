@@ -18,9 +18,10 @@ class GroupResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'status' => $this->status,
-            'role' => $this->role,
+            'status' => $this->currentUseGroup?->status,
+            'role' => $this->currentUseGroup?->role,
             'slug' => $this->slug,
+            'cover_url' => '/images/coverimageholder.webp',
             'thumbnail_url' => '/man1.jpg',
             'description' => Str::words($this->about, 10),
             'auto_approval' => $this->auto_approval,

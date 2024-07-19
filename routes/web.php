@@ -12,6 +12,7 @@ use Inertia\Inertia;
 Route::get('/', [HomeController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('home');
 Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('profile.home');
+Route::get('/g/{group:slug}', [GroupController::class, 'groupProfile'])->name('group.profile');
 
  Route::middleware('auth')->group(function () {
     // Profile

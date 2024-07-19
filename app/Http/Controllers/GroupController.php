@@ -9,15 +9,24 @@ use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
 use App\Models\GroupUser;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class GroupController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function groupProfile(Group $group): Response
     {
         //
+
+        $group->load('currentUseGroup');
+
+        return Inertia::render('Group/View', [
+            'success' => session('success'),
+            'group' => new GroupResource($group)
+        ]);
 
     }
 
