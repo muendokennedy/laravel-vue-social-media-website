@@ -9,6 +9,8 @@ use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
 use App\Models\GroupUser;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,7 +23,7 @@ class GroupController extends Controller
     {
         //
 
-        $group->load('currentUseGroup');
+        $group->load('currentUserGroup');
 
         return Inertia::render('Group/View', [
             'success' => session('success'),
@@ -82,5 +84,45 @@ class GroupController extends Controller
     public function destroy(Group $group)
     {
         //
+    }
+
+    public function updateImages(Request $request, Group $group)
+    {
+
+        if(!$group->isAdmin(auth()->id())){
+            return response('You do not have permission to perform this action', 403);
+        }
+
+        $data = $request->validate([
+            'cover' => ['nullable', 'image'],
+            'thumbnail' => ['nullable', 'image']
+        ]);
+
+
+        $thumbnail = $data['thumbnail'] ?? null;
+        $cover = $data['cover'] ?? null;
+        $success = null;
+
+        if($cover){
+            if($group->cover_path){
+                Storage::disk('public')->delete($group->cover_path);
+            }
+            $path = $cover->store('covers/group-' . $group->id, 'public');
+            $group->update(['cover_path' => $path]);
+
+            $success = 'Your cover image was updated';
+        }
+        if($thumbnail){
+            if($group->thumbnail_path){
+                Storage::disk('public')->delete($group->thumbnail_path);
+            }
+            $path = $thumbnail->store('thumbnails/group-' . $group->id, 'public');
+            $group->update(['thumbnail_path' => $path]);
+
+            $success = 'Your thumbnail image was updated';
+        }
+
+        return back()->with('success', $success);
+
     }
 }

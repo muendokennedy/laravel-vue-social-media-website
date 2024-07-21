@@ -19,7 +19,9 @@ class Group extends Model
         'auto_approval',
         'about',
         'user_id',
-        'deleted_by'
+        'deleted_by',
+        'cover_path',
+        'thumbnail_path'
     ];
 
     public function getSlugOptions(): SlugOptions
@@ -30,8 +32,13 @@ class Group extends Model
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function currentUseGroup(): HasOne
+    public function currentUserGroup(): HasOne
     {
        return $this->hasOne(GroupUser::class)->where('user_id', auth()->id());
+    }
+
+    public function isAdmin($userId): bool
+    {
+       return $this->currentUserGroup?->user_id === $userId;
     }
 }

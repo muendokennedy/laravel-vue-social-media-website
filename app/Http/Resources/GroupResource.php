@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class GroupResource extends JsonResource
@@ -18,11 +19,11 @@ class GroupResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'status' => $this->currentUseGroup?->status,
-            'role' => $this->currentUseGroup?->role,
+            'status' => $this->currentUserGroup?->status,
+            'role' => $this->currentUserGroup?->role,
             'slug' => $this->slug,
-            'cover_url' => '/images/coverimageholder.webp',
-            'thumbnail_url' => '/man1.jpg',
+            'cover_url' => $this->cover_path ? Storage::url($this->cover_path) : '/images/coverimageholder.webp',
+            'thumbnail_url' => $this->thumbnail_path ? Storage::url($this->thumbnail_path) : '/images/useravatar4.webp',
             'description' => Str::words($this->about, 10),
             'auto_approval' => $this->auto_approval,
             'about' => $this->about,

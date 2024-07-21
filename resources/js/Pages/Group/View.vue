@@ -18,7 +18,7 @@ const props = defineProps({
 
 const authUser = usePage().props.auth.user;
 
-const isCurrentUseAdmin = computed(() => props.group.role === 'admin')
+const isCurrentUserAdmin = computed(() => props.group.role === 'admin')
 
 const imagesForm = useForm({
     cover: null,
@@ -75,7 +75,7 @@ const cancelThumbnailImage = () => {
 }
 
 const submitCoverImage = () => {
-    imagesForm.post(route('profile.updateImages'), {
+    imagesForm.post(route('group.updateImages', props.group.slug), {
         onSuccess: () => {
             cancelCoverImage()
             setTimeout(() => {
@@ -86,7 +86,7 @@ const submitCoverImage = () => {
     })
 }
 const submitThumbnailImage = () => {
-    imagesForm.post(route('profile.updateImages'), {
+    imagesForm.post(route('group.updateImages', props.group.slug), {
         onSuccess: () => {
             cancelThumbnailImage()
             setTimeout(() => {
@@ -111,7 +111,7 @@ const submitThumbnailImage = () => {
             </div>
         <div class="relative bg-white group">
             <img :src="coverImageSource ?? group.cover_url ?? '/images/coverimageholder.webp'" alt="cover image" class="w-full h-52 object-cover">
-            <div class="absolute top-2 right-2">
+            <div v-if="isCurrentUserAdmin" class="absolute top-2 right-2">
                 <button v-if="!coverImageSource" class="opacity-0 group-hover:opacity-100 flex items-center bg-gray-50 hover:bg-gray-100 text-gray-800 py-1 px-2 text-xs">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3 mr-2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
@@ -135,11 +135,11 @@ const submitThumbnailImage = () => {
             <div class="flex">
                 <div class="flex items-center justify-center relative group/thumbnail -mt-16 ml-12 w-32 h-32 rounded-full">
                     <img :src="thumbnailImageSource ?? group.thumbnail_url ?? '/images/useravatar4.webp'" alt="user thumbnail" class="w-full h-full object-cover rounded-full">
-                        <button v-if="!thumbnailImageSource" class="absolute bg-black/50 text-white rounded-full inset-0 flex items-center justify-center opacity-0 group-hover/thumbnail:opacity-100">
+                        <button v-if="isCurrentUserAdmin && !thumbnailImageSource" class="absolute bg-black/50 text-white rounded-full inset-0 flex items-center justify-center opacity-0 group-hover/thumbnail:opacity-100">
                             <CameraIcon  class="size-8 mr-2"/>
                             <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" @change="onThumbnailChange">
                         </button>
-                        <div v-else class="absolute right-0 top-1 flex gap-2 flex-col">
+                        <div v-else-if="isCurrentUserAdmin" class="absolute right-0 top-1 flex gap-2 flex-col">
                             <button @click="cancelThumbnailImage" class="w-7 h-7 flex items-center justify-center bg-red-500/80 text-white rounded-full">
                                 <XMarkIcon class="size-5"/>
                             </button>
@@ -150,7 +150,7 @@ const submitThumbnailImage = () => {
                 </div>
                 <div class="flex justify-between items-center flex-1 p-4">
                     <h2 class="font-bold text-lg">{{ group.name }}</h2>
-                   <PrimaryButton v-if="isCurrentUseAdmin">Invite users</PrimaryButton>
+                   <PrimaryButton v-if="isCurrentUserAdmin">Invite users</PrimaryButton>
                    <PrimaryButton v-if="!group.role && group.auto_approval">Join to Group</PrimaryButton>
                    <PrimaryButton v-if="!group.role && !group.auto_approval">Request to Join</PrimaryButton>
                 </div>
