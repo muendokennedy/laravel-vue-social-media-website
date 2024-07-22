@@ -136,6 +136,12 @@ class GroupController extends Controller
 
         $user = $request->user;
 
+        $groupUser = $request->groupUser;
+
+        if($groupUser){
+            $groupUser->delete();
+        }
+
         GroupUser::create([
             'status' => GroupUserStatus::PENDING->value,
             'role' => GroupUserRole::USER->value,

@@ -2,12 +2,17 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Enums\GroupUserStatus;
+use App\Models\Group;
+use App\Models\GroupUser;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class InviteUserRequest extends FormRequest
 {
     public ?User $user = null;
+    public Group $group;
+    public ?GroupUser $groupUser = null;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -15,9 +20,9 @@ class InviteUserRequest extends FormRequest
     {
         /** @var \App\Models\Group $group **/
 
-        $group = $this->route('group');
+        $this->group = $this->route('group');
 
-        return $group->isAdmin(auth()->id());
+        return $this->group->isAdmin(auth()->id());
 
     }
 
@@ -36,6 +41,15 @@ class InviteUserRequest extends FormRequest
 
                 if(!$this->user){
                     $fail('This user does not exist');
+                }
+
+                $this->groupUser = GroupUser::where([
+                    'user_id' => $this->user->id,
+                    'group_id' => $this->group->id
+                ])->first();
+
+                if($this->groupUser && $this->groupUser->status === GroupUserStatus::APPROVED->value){
+                    $fail('This user is already joined to the group');
                 }
             }]
          ];
