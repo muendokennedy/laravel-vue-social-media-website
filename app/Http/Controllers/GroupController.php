@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
 use App\Models\GroupUser;
+use App\Notifications\InvitationToGroupCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -152,6 +153,8 @@ class GroupController extends Controller
             'group_id' => $group->id,
             'created_by' => auth()->id(),
         ]);
+
+        $user->notify(new InvitationToGroupCreated($group));
 
         return back()->with('success', 'The user was invited to join the group');
     }
