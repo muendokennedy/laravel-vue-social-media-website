@@ -14,8 +14,11 @@ class GroupUser extends Model
     protected $fillable = [
         'status',
         'role',
+        'token',
+        'token_expire_date',
         'user_id',
         'group_id',
         'created_by'
     ];
+
 }

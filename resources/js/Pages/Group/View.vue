@@ -6,6 +6,7 @@ import { XMarkIcon, CheckCircleIcon, CameraIcon } from '@heroicons/vue/24/solid'
 import { useForm, usePage } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue'
+import InviteUserModal from './InviteUserModal.vue'
 
 const props = defineProps({
     group: {
@@ -31,6 +32,7 @@ const showNotification = ref(true)
 
 const coverImageSource = ref(null)
 const thumbnailImageSource = ref(null)
+const showInviteUserModel = ref(false)
 
 
 
@@ -150,7 +152,7 @@ const submitThumbnailImage = () => {
                 </div>
                 <div class="flex justify-between items-center flex-1 p-4">
                     <h2 class="font-bold text-lg">{{ group.name }}</h2>
-                   <PrimaryButton v-if="isCurrentUserAdmin">Invite users</PrimaryButton>
+                   <PrimaryButton @click="showInviteUserModel = true" v-if="isCurrentUserAdmin">Invite users</PrimaryButton>
                    <PrimaryButton v-if="!group.role && group.auto_approval">Join to Group</PrimaryButton>
                    <PrimaryButton v-if="!group.role && !group.auto_approval">Request to Join</PrimaryButton>
                 </div>
@@ -190,4 +192,5 @@ const submitThumbnailImage = () => {
         </div>
         </div>
     </AuthenticatedLayout>
+    <InviteUserModal v-model="showInviteUserModel"/>
 </template>

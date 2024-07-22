@@ -18,6 +18,7 @@ Route::get('/g/{group:slug}', [GroupController::class, 'groupProfile'])->name('g
     // Profile
      Route::post('/profile/update-profile-images', [ProfileController::class, 'updateImages'])->name('profile.updateImages');
      Route::post('/group/update-group-images/{group:slug}', [GroupController::class, 'updateImages'])->name('group.updateImages');
+     Route::post('/group/invite-user/{group:slug}', [GroupController::class, 'inviteUser'])->name('group.inviteUser');
      Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
      Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
      // Post

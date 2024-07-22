@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Enums\GroupUserRole;
 use App\Http\Enums\GroupUserStatus;
+use App\Http\Requests\InviteUserRequest;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
 use App\Models\GroupUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -124,5 +127,26 @@ class GroupController extends Controller
 
         return back()->with('success', $success);
 
+    }
+
+    public function inviteUser(InviteUserRequest $request, Group $group)
+    {
+
+        $data = $request->validated();
+
+        $user = $request->user;
+
+        GroupUser::create([
+            'status' => GroupUserStatus::PENDING->value,
+            'role' => GroupUserRole::USER->value,
+            'token' => Str::random(256),
+            'token_expire_date' =>  Carbon::now()->addHours(24),
+            // 'token_used' => '',
+            'user_id' => $user->id,
+            'group_id' => $group->id,
+            'created_by' => auth()->id(),
+        ]);
+
+        return back()->with('success', 'The user was invited to join the group');
     }
 }
