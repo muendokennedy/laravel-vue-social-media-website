@@ -14,6 +14,9 @@ Route::get('/', [HomeController::class, 'index'])
 Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('profile.home');
 Route::get('/g/{group:slug}', [GroupController::class, 'groupProfile'])->name('group.profile');
 
+Route::get('/group/confirm-invitation/{token}', [GroupController::class, 'confirmInvitation'])->name('group.confirmInvitation');
+
+
  Route::middleware('auth')->group(function () {
     // Profile
      Route::post('/profile/update-profile-images', [ProfileController::class, 'updateImages'])->name('profile.updateImages');

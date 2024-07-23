@@ -143,19 +143,44 @@ class GroupController extends Controller
             $groupUser->delete();
         }
 
+        $hours = 24;
+        $token = Str::random(256);
+
         GroupUser::create([
             'status' => GroupUserStatus::PENDING->value,
             'role' => GroupUserRole::USER->value,
-            'token' => Str::random(256),
-            'token_expire_date' =>  Carbon::now()->addHours(24),
-            // 'token_used' => '',
+            'token' => $token,
+            'token_expire_date' =>  Carbon::now()->addHours($hours),
             'user_id' => $user->id,
             'group_id' => $group->id,
             'created_by' => auth()->id(),
         ]);
 
-        $user->notify(new InvitationToGroupCreated($group));
+        $user->notify(new InvitationToGroupCreated($group, $hours, $token));
 
         return back()->with('success', 'The user was invited to join the group');
+    }
+
+    public function confirmInvitation(string $token)
+    {
+       $groupUser = GroupUser::where('token', $token)->first();
+
+       $errorTitle = '';
+
+       if(!$groupUser){
+        $errorTitle = 'The link is not valid';
+       } elseif($groupUser->token_used || $groupUser->status === GroupUserStatus::APPROVED->value){
+        $errorTitle = 'The link is already used';
+       } elseif($groupUser->token_expire_date < Carbon::now()){
+        $errorTitle = 'The link is already expired';
+       }
+
+       if($errorTitle){
+           return Inertia::render('Error', compact('errorTitle'));
+       }
+
+       $groupUser->status = GroupUserStatus::APPROVED->value;
+       $groupUser->token_used = Carbon::now();
+       $groupUser->save();
     }
 }
