@@ -98,6 +98,12 @@ const submitThumbnailImage = () => {
         }
     })
 }
+
+const joinToGroup = () => {
+    const form = useForm({ })
+
+    form.post(route('group.join', props.group.slug))
+}
 </script>
 <template>
     <AuthenticatedLayout>
@@ -152,9 +158,18 @@ const submitThumbnailImage = () => {
                 </div>
                 <div class="flex justify-between items-center flex-1 p-4">
                     <h2 class="font-bold text-lg">{{ group.name }}</h2>
-                   <PrimaryButton @click="showInviteUserModel = true" v-if="isCurrentUserAdmin">Invite users</PrimaryButton>
-                   <PrimaryButton v-if="!group.role && group.auto_approval">Join to Group</PrimaryButton>
-                   <PrimaryButton v-if="!group.role && !group.auto_approval">Request to Join</PrimaryButton>
+                   <PrimaryButton v-if="!authUser" :href="route('login')" >
+                    Login to join this group
+                   </PrimaryButton>
+                   <PrimaryButton v-if="isCurrentUserAdmin" @click="showInviteUserModel = true" >
+                    Invite users
+                   </PrimaryButton>
+                   <PrimaryButton v-if="authUser && !group.role && group.auto_approval" @click="joinToGroup">
+                    Join to Group
+                   </PrimaryButton>
+                   <PrimaryButton v-if="authUser && !group.role && !group.auto_approval" @click="joinToGroup">
+                    Request to Join
+                   </PrimaryButton>
                 </div>
             </div>
         </div>
