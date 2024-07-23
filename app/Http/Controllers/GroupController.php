@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
 use App\Models\GroupUser;
+use App\Notifications\GroupIvitationAccepted;
 use App\Notifications\InvitationToGroupCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -182,5 +183,11 @@ class GroupController extends Controller
        $groupUser->status = GroupUserStatus::APPROVED->value;
        $groupUser->token_used = Carbon::now();
        $groupUser->save();
+
+       $adminUser = $groupUser->adminUser;
+
+       $adminUser->notify(new GroupIvitationAccepted($groupUser->group, $groupUser->user));
+
+       return to_route('group.profile', $groupUser->group)->with('success', 'You accepted to join to "'.$groupUser->group->name.'" group');
     }
 }
