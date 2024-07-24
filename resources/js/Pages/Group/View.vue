@@ -7,19 +7,28 @@ import { useForm, usePage } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import InviteUserModal from './InviteUserModal.vue'
+import UserListItem from '@/Components/app/UserListItem.vue'
 
 const props = defineProps({
     group: {
-        Object
+        type: Object
     },
     success: {
-        String
+        type: String
+    },
+    users: {
+        type: Array
+    },
+    requests: {
+        type: Array
     }
 })
 
 const authUser = usePage().props.auth.user;
 
 const isCurrentUserAdmin = computed(() => props.group.role === 'admin')
+
+const isJoinedToGroup = computed(() => !!props.group.role && props.group.status === 'approved')
 
 const imagesForm = useForm({
     cover: null,
@@ -104,6 +113,15 @@ const joinToGroup = () => {
 
     form.post(route('group.join', props.group.slug))
 }
+
+const approveUser = (user) => {
+    const form = useForm({
+        user_id: user.id
+    })
+
+    form.post(route('group.approveRequest', props.group.slug))
+}
+
 </script>
 <template>
     <AuthenticatedLayout>
@@ -179,28 +197,30 @@ const joinToGroup = () => {
               <Tab v-slot="{ selected }" as="template">
                 <TabItem text='My Posts' :selected="selected"></TabItem>
               </Tab>
-              <Tab v-slot="{ selected }" as="template">
-                <TabItem text='Who I Follow' :selected="selected"></TabItem>
+              <Tab v-if="isJoinedToGroup" v-slot="{ selected }" as="template">
+                <TabItem text='Users' :selected="selected"></TabItem>
+              </Tab>
+              <Tab v-if="isCurrentUserAdmin" v-slot="{ selected }" as="template">
+                <TabItem text='Requests' :selected="selected"></TabItem>
               </Tab>
               <Tab v-slot="{ selected }" as="template">
-                <TabItem text='My Followers' :selected="selected"></TabItem>
-              </Tab>
-              <Tab v-slot="{ selected }" as="template">
-                <TabItem text='My Photos' :selected="selected"></TabItem>
+                <TabItem text='Photos' :selected="selected"></TabItem>
               </Tab>
             </TabList>
             <TabPanels class="mt-2">
               <TabPanel class="bg-white p-3 shadow">
-                These are my posts
+                Posts
+              </TabPanel>
+              <TabPanel v-if="isJoinedToGroup" class="bg-white p-3 shadow">
+                <UserListItem v-for="(user, index) in users" :user="user" :key="index"/>
+              </TabPanel>
+              <TabPanel v-if="isCurrentUserAdmin" class="">
+                <div class="grid grid-cols-2 gap-3">
+                    <UserListItem v-for="(user, index) in requests" :user="user" :key="index" @approve="approveUser" class="shadow"/>
+                </div>
               </TabPanel>
               <TabPanel class="bg-white p-3 shadow">
-                I follow all these people
-              </TabPanel>
-              <TabPanel class="bg-white p-3 shadow">
-                These are my followers
-              </TabPanel>
-              <TabPanel class="bg-white p-3 shadow">
-                These are my Photos
+                Photos
               </TabPanel>
             </TabPanels>
           </TabGroup>

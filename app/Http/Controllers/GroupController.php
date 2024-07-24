@@ -8,6 +8,7 @@ use App\Http\Requests\InviteUserRequest;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
+use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Models\GroupUser;
 use App\Notifications\GroupIvitationAccepted;
@@ -32,9 +33,15 @@ class GroupController extends Controller
 
         $group->load('currentUserGroup');
 
+        $users = $group->approvedUsers;
+
+        $requests = $group->pendingUsers;
+
         return Inertia::render('Group/View', [
             'success' => session('success'),
-            'group' => new GroupResource($group)
+            'group' => new GroupResource($group),
+            'users' => UserResource::collection($users),
+            'requests' => UserResource::collection($requests)
         ]);
 
     }
@@ -222,5 +229,29 @@ class GroupController extends Controller
         ]);
 
         return back()->with('success', $successMessage);
+    }
+
+    public function approveRequest(Request $request, Group $group)
+    {
+        if(!$group->isAdmin(auth()->id())){
+            return response('You do not have permission to perform this action', 403);
+        }
+
+        $data = $request->validate([
+            'user_id' => 'required'
+        ]);
+
+        $groupUser = GroupUser::where([
+            'user_id' => $data['user_id'],
+            'group_id' => $group->id,
+            'status' => GroupUserStatus::PENDING->value
+        ])->first();
+
+        if($groupUser){
+            $groupUser->status = GroupUserStatus::APPROVED->value;
+            $groupUser->save();
+        }
+
+        return back()->with('success', 'User "'.$groupUser->user->name.'" was successfully approved to this group');
     }
 }

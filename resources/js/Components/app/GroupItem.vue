@@ -8,7 +8,7 @@ defineProps({
 <template>
     <div class="mb-3 hover:bg-gray-100 cursor-pointer">
         <Link :href="route('group.profile', {group: group.slug})" class="flex items-start gap-1 py-2 px-3">
-            <img :src="group.thumbnail_url" alt="An image" class="w-8 rounded-full">
+            <img :src="group.thumbnail_url" alt="An image" class="w-10 h-10 rounded-full object-cover">
             <div class="flex-1">
                 <div class="flex justify-between">
                     <h3 class="font-black text-xl">{{group.name}}</h3>

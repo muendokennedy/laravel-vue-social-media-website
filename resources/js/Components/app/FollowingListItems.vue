@@ -1,5 +1,5 @@
 <script setup>
-import FollowingItem from './FollowingItem.vue';
+import UserListItem from './UserListItem.vue';
 import TextInput from '../TextInput.vue';
 import { ref } from 'vue';
 
@@ -13,38 +13,7 @@ const searchKeyword = ref('')
                 You do not have any friends yet.
             </div>
             <div v-else>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
-                <FollowingItem title="John Doe" image="/man1.jpg"/>
-                <FollowingItem title="Elon Musk" image="/man1.jpg"/>
+
             </div>
         </div>
 </template>
