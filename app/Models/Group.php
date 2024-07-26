@@ -43,7 +43,7 @@ class Group extends Model
 
     public function isAdmin($userId): bool
     {
-       return $this->currentUserGroup?->user_id === $userId;
+       return $this->currentUserGroup?->user_id === $userId && $this->currentUserGroup?->role === GroupUserRole::ADMIN->value;
     }
 
     public function adminUsers(): BelongsToMany

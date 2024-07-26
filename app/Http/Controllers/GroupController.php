@@ -291,8 +291,14 @@ class GroupController extends Controller
             'role' => ['required', Rule::enum(GroupUserRole::class)]
         ]);
 
+        $user_id = $data['user_id'];
+
+        if($user_id === $group->user_id){
+            return response('You cannot change the role of the owner of the group', 403);
+        }
+
         $groupUser = GroupUser::where([
-            'user_id' => $data['user_id'],
+            'user_id' => $user_id,
             'group_id' => $group->id,
         ])->first();
 
