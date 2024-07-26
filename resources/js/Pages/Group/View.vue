@@ -8,6 +8,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import InviteUserModal from './InviteUserModal.vue'
 import UserListItem from '@/Components/app/UserListItem.vue'
+import TextInput from '@/Components/TextInput.vue'
 
 const props = defineProps({
     group: {
@@ -42,6 +43,7 @@ const showNotification = ref(true)
 const coverImageSource = ref(null)
 const thumbnailImageSource = ref(null)
 const showInviteUserModel = ref(false)
+const searchKeyword = ref('')
 
 
 
@@ -116,7 +118,17 @@ const joinToGroup = () => {
 
 const approveUser = (user) => {
     const form = useForm({
-        user_id: user.id
+        user_id: user.id,
+        action: 'approve'
+    })
+
+    form.post(route('group.approveRequest', props.group.slug))
+}
+
+const rejectUser = (user) => {
+    const form = useForm({
+        user_id: user.id,
+        action: 'reject'
     })
 
     form.post(route('group.approveRequest', props.group.slug))
@@ -188,6 +200,9 @@ const approveUser = (user) => {
                    <PrimaryButton v-if="authUser && !group.role && !group.auto_approval" @click="joinToGroup">
                     Request to Join
                    </PrimaryButton>
+                   <PrimaryButton v-if="authUser && group.role && group.status === 'rejected' && !group.auto_approval" @click="joinToGroup">
+                    Request to Join again
+                   </PrimaryButton>
                 </div>
             </div>
         </div>
@@ -211,12 +226,20 @@ const approveUser = (user) => {
               <TabPanel class="bg-white p-3 shadow">
                 Posts
               </TabPanel>
-              <TabPanel v-if="isJoinedToGroup" class="bg-white p-3 shadow">
-                <UserListItem v-for="(user, index) in users" :user="user" :key="index"/>
-              </TabPanel>
-              <TabPanel v-if="isCurrentUserAdmin" class="">
+              <TabPanel v-if="isJoinedToGroup">
+                <div class="mb-3">
+                    <TextInput v-model="searchKeyword" placeHolder="Search here..." class="w-full"/>
+                </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <UserListItem v-for="(user, index) in requests" :user="user" :key="index" @approve="approveUser" class="shadow"/>
+                    <UserListItem v-for="(user, index) in users" :user="user" :key="index" class="shadow"/>
+                </div>
+              </TabPanel>
+              <TabPanel v-if="isCurrentUserAdmin">
+                <div v-if="requests.length" class="grid grid-cols-2 gap-3">
+                    <UserListItem v-for="(user, index) in requests" :user="user" :for-approve="true" :key="index" @approve="approveUser" @reject="rejectUser" class="shadow"/>
+                </div>
+                <div v-else class="py-8 text-center">
+                    There are no pending requests
                 </div>
               </TabPanel>
               <TabPanel class="bg-white p-3 shadow">

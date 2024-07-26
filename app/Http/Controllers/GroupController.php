@@ -11,6 +11,7 @@ use App\Http\Resources\GroupResource;
 use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Models\GroupUser;
+use App\Notifications\GroupInvitationRequestApproved;
 use App\Notifications\GroupIvitationAccepted;
 use App\Notifications\GroupIvitationRequested;
 use App\Notifications\InvitationToGroupCreated;
@@ -33,9 +34,9 @@ class GroupController extends Controller
 
         $group->load('currentUserGroup');
 
-        $users = $group->approvedUsers;
+        $users = $group->approvedUsers()->orderBy('name')->get();
 
-        $requests = $group->pendingUsers;
+        $requests = $group->pendingUsers()->orderBy('name')->get();
 
         return Inertia::render('Group/View', [
             'success' => session('success'),
@@ -238,7 +239,8 @@ class GroupController extends Controller
         }
 
         $data = $request->validate([
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'action' => 'required'
         ]);
 
         $groupUser = GroupUser::where([
@@ -248,10 +250,23 @@ class GroupController extends Controller
         ])->first();
 
         if($groupUser){
-            $groupUser->status = GroupUserStatus::APPROVED->value;
+            $approved = false;
+            if($data['action'] === 'approve'){
+                $approved = true;
+                $groupUser->status = GroupUserStatus::APPROVED->value;
+            }elseif($data['action'] === 'reject'){
+                $groupUser->status = GroupUserStatus::REJECTED->value;
+            }
             $groupUser->save();
+
+            $user = $groupUser->user;
+
+            $user->notify(new GroupInvitationRequestApproved($groupUser->group, $user, $approved));
+
+            return back()->with('success', 'User "'.$user->name.'" was successfully '.($approved ? 'approved' : 'rejected'));
         }
 
-        return back()->with('success', 'User "'.$groupUser->user->name.'" was successfully approved to this group');
+        return back();
+
     }
 }

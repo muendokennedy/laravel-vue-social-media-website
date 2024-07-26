@@ -9,4 +9,6 @@ enum GroupUserStatus: string
 
     case APPROVED = 'approved';
 
+    case REJECTED = 'rejected';
+
 }
