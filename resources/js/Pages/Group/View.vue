@@ -134,6 +134,15 @@ const rejectUser = (user) => {
     form.post(route('group.approveRequest', props.group.slug))
 }
 
+const onRoleChange = (user, role) => {
+    const form = useForm({
+        user_id: user.id,
+        role
+    })
+
+    form.post(route('group.changeRole', props.group.slug))
+}
+
 </script>
 <template>
     <AuthenticatedLayout>
@@ -201,9 +210,6 @@ const rejectUser = (user) => {
                            <PrimaryButton v-if="authUser && !group.role && !group.auto_approval" @click="joinToGroup">
                             Request to Join
                            </PrimaryButton>
-                           <PrimaryButton v-if="authUser && group.role && group.status === 'rejected' && !group.auto_approval" @click="joinToGroup">
-                            Request to Join again
-                           </PrimaryButton>
                         </div>
                     </div>
                 </div>
@@ -233,12 +239,23 @@ const rejectUser = (user) => {
                     <TextInput v-model="searchKeyword" placeHolder="Search here..." class="w-full"/>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <UserListItem v-for="(user, index) in users" :user="user" :key="index" class="shadow"/>
+                    <UserListItem v-for="(user, index) in users"
+                    :user="user"
+                    :key="index"
+                    :show-role-dropdown="isCurrentUserAdmin"
+                    @role-change="onRoleChange"
+                    class="shadow"/>
                 </div>
               </TabPanel>
               <TabPanel v-if="isCurrentUserAdmin">
                 <div v-if="requests.length" class="grid grid-cols-2 gap-3">
-                    <UserListItem v-for="(user, index) in requests" :user="user" :for-approve="true" :key="index" @approve="approveUser" @reject="rejectUser" class="shadow"/>
+                    <UserListItem v-for="(user, index) in requests"
+                    :user="user"
+                    :for-approve="true"
+                    :key="index"
+                    @approve="approveUser"
+                    @reject="rejectUser"
+                    class="shadow"/>
                 </div>
                 <div v-else class="py-8 text-center">
                     There are no pending requests

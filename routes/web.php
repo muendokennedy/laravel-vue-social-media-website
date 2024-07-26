@@ -24,6 +24,7 @@ Route::get('/group/confirm-invitation/{token}', [GroupController::class, 'confir
      Route::post('/group/invite-user/{group:slug}', [GroupController::class, 'inviteUser'])->name('group.inviteUser');
      Route::post('/group/join/{group:slug}', [GroupController::class, 'joinGroup'])->name('group.join');
      Route::post('/group/approve-request/{group:slug}', [GroupController::class, 'approveRequest'])->name('group.approveRequest');
+     Route::post('/group/change-group-role/{group:slug}', [GroupController::class, 'changeGroupRole'])->name('group.changeRole');
      Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
      Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
      // Post

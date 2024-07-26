@@ -8,9 +8,11 @@ use App\Http\Requests\InviteUserRequest;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
+use App\Http\Resources\GroupUserResource;
 use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Models\GroupUser;
+use App\Models\User;
 use App\Notifications\GroupInvitationRequestApproved;
 use App\Notifications\GroupIvitationAccepted;
 use App\Notifications\GroupIvitationRequested;
@@ -20,6 +22,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,14 +37,19 @@ class GroupController extends Controller
 
         $group->load('currentUserGroup');
 
-        $users = $group->approvedUsers()->orderBy('name')->get();
+        $users = User::query()
+                    ->select(['users.*', 'gu.role', 'gu.status', 'gu.group_id'])
+                    ->join('group_users AS gu', 'gu.user_id', 'users.id')
+                    ->orderBy('gu.role')
+                    ->where('group_id', $group->id)
+                    ->get();
 
         $requests = $group->pendingUsers()->orderBy('name')->get();
 
         return Inertia::render('Group/View', [
             'success' => session('success'),
             'group' => new GroupResource($group),
-            'users' => UserResource::collection($users),
+            'users' => GroupUserResource::collection($users),
             'requests' => UserResource::collection($requests)
         ]);
 
@@ -270,5 +278,34 @@ class GroupController extends Controller
 
         return back();
 
+    }
+
+    public function changeGroupRole(Request $request, Group $group)
+    {
+        if(!$group->isAdmin(auth()->id())){
+            return response('You do not have permission to perform this action', 403);
+        }
+
+        $data = $request->validate([
+            'user_id' => 'required',
+            'role' => ['required', Rule::enum(GroupUserRole::class)]
+        ]);
+
+        $groupUser = GroupUser::where([
+            'user_id' => $data['user_id'],
+            'group_id' => $group->id,
+        ])->first();
+
+        if($groupUser){
+            $groupUser->role = $data['role'];
+
+            $groupUser->save();
+
+            // TODO
+            // send an email to regular user notifying them that their role was changed
+
+
+            return back()->with('success', $groupUser->user->name . ' was made ' . $groupUser->role);
+        }
     }
 }
