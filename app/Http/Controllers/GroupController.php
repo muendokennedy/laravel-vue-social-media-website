@@ -256,6 +256,8 @@ class GroupController extends Controller
                 $groupUser->status = GroupUserStatus::APPROVED->value;
             }elseif($data['action'] === 'reject'){
                 $groupUser->status = GroupUserStatus::REJECTED->value;
+                // we can just delete the user instance if he or she is rejected
+                // TODO
             }
             $groupUser->save();
 
