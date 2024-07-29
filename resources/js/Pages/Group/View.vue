@@ -139,7 +139,7 @@ const onRoleChange = (user, role) => {
         user_id: user.id,
         role
     })
-
+    // TODO consider preserving the scroll position after all these form submission here and the ones above
     form.post(route('group.changeRole', props.group.slug))
 }
 
@@ -243,6 +243,7 @@ const onRoleChange = (user, role) => {
                     :user="user"
                     :key="index"
                     :show-role-dropdown="isCurrentUserAdmin"
+                    :disable-role-dropdown="group.user_id === user.id"
                     @role-change="onRoleChange"
                     class="shadow"/>
                 </div>

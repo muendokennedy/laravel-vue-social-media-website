@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Notifications\GroupInvitationRequestApproved;
 use App\Notifications\GroupIvitationAccepted;
 use App\Notifications\GroupIvitationRequested;
+use App\Notifications\GroupUserRoleChanged;
 use App\Notifications\InvitationToGroupCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -293,7 +294,7 @@ class GroupController extends Controller
 
         $user_id = $data['user_id'];
 
-        if($user_id === $group->user_id){
+        if($group->isOwner($user_id)){
             return response('You cannot change the role of the owner of the group', 403);
         }
 
@@ -307,8 +308,7 @@ class GroupController extends Controller
 
             $groupUser->save();
 
-            // TODO
-            // send an email to regular user notifying them that their role was changed
+            $groupUser->user->notify(new GroupUserRoleChanged($group, $data['role']));
 
 
             return back()->with('success', $groupUser->user->name . ' was made ' . $groupUser->role);
