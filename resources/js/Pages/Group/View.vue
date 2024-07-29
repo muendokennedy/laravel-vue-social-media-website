@@ -10,6 +10,7 @@ import InviteUserModal from './InviteUserModal.vue'
 import UserListItem from '@/Components/app/UserListItem.vue'
 import TextInput from '@/Components/TextInput.vue'
 import GroupEditForm from '@/Components/app/GroupEditForm.vue'
+import GroupInfo from '@/Components/app/GroupInfo.vue'
 
 const props = defineProps({
     group: {
@@ -240,7 +241,7 @@ const updateGroupInformation = () => {
               <Tab v-slot="{ selected }" as="template">
                 <TabItem text='Photos' :selected="selected"></TabItem>
               </Tab>
-              <Tab v-if="isCurrentUserAdmin" v-slot="{ selected }" as="template">
+              <Tab v-slot="{ selected }" as="template">
                 <TabItem text='About' :selected="selected"></TabItem>
               </Tab>
             </TabList>
@@ -280,8 +281,9 @@ const updateGroupInformation = () => {
                 Photos
               </TabPanel>
               <TabPanel class="bg-white p-3 shadow">
-                <GroupEditForm :form="aboutForm"/>
-                <PrimaryButton @click="updateGroupInformation">Submit</PrimaryButton>
+                <GroupEditForm v-if="isCurrentUserAdmin" :form="aboutForm"/>
+                <GroupInfo v-else-if="!isCurrentUserAdmin" :form="aboutForm"/>
+                <PrimaryButton v-if="isCurrentUserAdmin" @click="updateGroupInformation">Submit</PrimaryButton>
               </TabPanel>
             </TabPanels>
           </TabGroup>
