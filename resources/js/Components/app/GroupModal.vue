@@ -7,6 +7,7 @@
     import Checkbox from '@/Components/Checkbox.vue'
     import axiosClient from '@/axiosClient.js'
     import InputTextarea from '@/Components/InputTextarea.vue'
+    import GroupEditForm from '@/Components/app/GroupEditForm.vue'
 
 
     const props = defineProps({
@@ -92,26 +93,7 @@
                       </button>
                     </DialogTitle>
                     <div class="p-4">
-                        <div class="mb-3">
-                            <label for="name">Group name</label>
-                            <TextInput
-                            id="name"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="form.name"
-                            autofocus
-                            />
-                        </div>
-                        <div  class="mb-3">
-                            <label for="remember">
-                                <Checkbox name="remember" id="remember" v-model:checked="form.auto_approval" />
-                                Enable auto approval
-                            </label>
-                        </div>
-                        <div class="mb-3">
-                            <label for="about">Group Description</label>
-                            <InputTextarea id="about" v-model="form.about" class="w-full"/>
-                        </div>
+                        <GroupEditForm :form="form"/>
                     </div>
                     <div class="py-3 px-4 flex gap-2 justify-end">
                         <button

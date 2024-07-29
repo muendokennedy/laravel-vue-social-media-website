@@ -9,6 +9,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue'
 import InviteUserModal from './InviteUserModal.vue'
 import UserListItem from '@/Components/app/UserListItem.vue'
 import TextInput from '@/Components/TextInput.vue'
+import GroupEditForm from '@/Components/app/GroupEditForm.vue'
 
 const props = defineProps({
     group: {
@@ -34,6 +35,12 @@ const isJoinedToGroup = computed(() => !!props.group.role && props.group.status 
 const imagesForm = useForm({
     cover: null,
     thumbnail: null,
+})
+
+const aboutForm = useForm({
+    name: props.group.name,
+    auto_approval: !!parseInt(props.group.auto_approval),
+    about: props.group.about
 })
 
 
@@ -143,6 +150,10 @@ const onRoleChange = (user, role) => {
     form.post(route('group.changeRole', props.group.slug))
 }
 
+const updateGroupInformation = () => {
+    aboutForm.put(route('group.update', props.group.slug))
+}
+
 </script>
 <template>
     <AuthenticatedLayout>
@@ -229,6 +240,9 @@ const onRoleChange = (user, role) => {
               <Tab v-slot="{ selected }" as="template">
                 <TabItem text='Photos' :selected="selected"></TabItem>
               </Tab>
+              <Tab v-if="isCurrentUserAdmin" v-slot="{ selected }" as="template">
+                <TabItem text='About' :selected="selected"></TabItem>
+              </Tab>
             </TabList>
             <TabPanels class="mt-2">
               <TabPanel class="bg-white p-3 shadow">
@@ -264,6 +278,10 @@ const onRoleChange = (user, role) => {
               </TabPanel>
               <TabPanel class="bg-white p-3 shadow">
                 Photos
+              </TabPanel>
+              <TabPanel class="bg-white p-3 shadow">
+                <GroupEditForm :form="aboutForm"/>
+                <PrimaryButton @click="updateGroupInformation">Submit</PrimaryButton>
               </TabPanel>
             </TabPanels>
           </TabGroup>

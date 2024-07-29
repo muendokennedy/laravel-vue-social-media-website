@@ -18,13 +18,16 @@ Route::get('/group/confirm-invitation/{token}', [GroupController::class, 'confir
 
 
  Route::middleware('auth')->group(function () {
-    // Profile
-     Route::post('/profile/update-profile-images', [ProfileController::class, 'updateImages'])->name('profile.updateImages');
+     // Group
+     Route::post('/group', [GroupController::class, 'store'])->name('group.create');
+     Route::put('/group/{group:slug}', [GroupController::class, 'update'])->name('group.update');
      Route::post('/group/update-group-images/{group:slug}', [GroupController::class, 'updateImages'])->name('group.updateImages');
      Route::post('/group/invite-user/{group:slug}', [GroupController::class, 'inviteUser'])->name('group.inviteUser');
      Route::post('/group/join/{group:slug}', [GroupController::class, 'joinGroup'])->name('group.join');
      Route::post('/group/approve-request/{group:slug}', [GroupController::class, 'approveRequest'])->name('group.approveRequest');
      Route::post('/group/change-group-role/{group:slug}', [GroupController::class, 'changeGroupRole'])->name('group.changeRole');
+     // Profile
+     Route::post('/profile/update-profile-images', [ProfileController::class, 'updateImages'])->name('profile.updateImages');
      Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
      Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
      // Post
@@ -38,8 +41,6 @@ Route::get('/group/confirm-invitation/{token}', [GroupController::class, 'confir
      Route::delete('/comment/{comment}', [PostController::class, 'deleteComment'])->name('comment.delete');
      Route::put('/comment/{comment}', [PostController::class, 'updateComment'])->name('comment.update');
      Route::post('/comment/{comment}/reaction', [PostController::class, 'commentReaction'])->name('comment.reaction');
-     // Group
-     Route::post('/group', [GroupController::class, 'store'])->name('group.create');
 
  });
 
