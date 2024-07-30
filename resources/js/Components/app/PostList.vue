@@ -46,7 +46,8 @@ const loadMore = () => {
         return
     }
     axiosClient.get(allPosts.value.next).then(({data}) => {
-        allPosts.value.data = [...allPosts.value.data, ...data.data]
+        console.log(data)
+        allPosts.value.data = [...allPosts.value.data, ...data]
         allPosts.value.next = data.links.next
     })
 }
