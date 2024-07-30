@@ -7,7 +7,7 @@ import InputTextarea from '@/Components/InputTextarea.vue'
 import EditDeleteDropdown from '@/Components/app/EditDeleteDropdown.vue'
 import CommentList from '@/Components/app/CommentList.vue'
 import DangerButton from '@/Components/DangerButton.vue'
-import { usePage } from '@inertiajs/vue3'
+import { usePage, Link } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import axiosClient from '@/axiosClient.js'
 
@@ -110,9 +110,9 @@ const onDeleteComment = (comment) => {
 
 <template>
     <div class="flex gap-2 mb-3">
-        <a href="javascript:void(0)">
+        <Link :href="route('profile.home', authUser)">
                     <img :src="authUser.avatar_url" alt="" class="w-10 h-10 object-cover rounded-full border border-2 hover:border-blue-500 transition-all">
-        </a>
+        </Link>
         <div class="flex-1 flex gap-2">
             <InputTextarea v-model="newCommentText" rows="1" class="w-full overflow-auto resize-none max-h-40" placeholder="Enter your comment here..."/>
             <IndigoButton @click="createComment" class="w-40 h-10 text-nowrap">Add comment</IndigoButton>
@@ -123,14 +123,14 @@ const onDeleteComment = (comment) => {
             <div v-for="(comment, index) in data.comments" :key="index" class="mb-4">
                 <div class="flex gap-2 justify-between">
                     <div class="flex gap-2">
-                        <a href="javascript:void(0)">
+                        <Link :href="route('profile.home', authUser)">
                                 <img :src="comment.user.avatar_url" alt="" class="w-10 h-10 object-cover rounded-full border border-2 hover:border-blue-500 transition-all">
-                        </a>
+                        </Link>
                         <div>
                             <h4 class="font-bold">
-                                <a href="javascript:void(0)" class="hover:underline">
+                                <Link :href="route('profile.home', authUser)" class="hover:underline">
                                 {{ comment.user.name }}
-                                </a>
+                                </Link>
                             </h4>
                             <small  class="text-gray-400 text-xs">Updated {{ comment.updated_at }}</small>
                         </div>

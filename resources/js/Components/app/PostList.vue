@@ -1,10 +1,9 @@
 <script setup>
 import PostItem from '@/Components/app/PostItem.vue'
 import PostModal from '@/Components/app/PostModal.vue'
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import AttachmentPreviewModal from '@/Components/app/AttachmentPreviewModal.vue'
-import { onMounted } from 'vue'
 import axiosClient from '@/axiosClient.js'
 
 
@@ -51,6 +50,14 @@ const loadMore = () => {
         allPosts.value.next = data.links.next
     })
 }
+
+watch(() => page.props.posts, () => {
+    console.log('The watch happened')
+    allPosts.value = {
+        data: page.props.posts.data,
+        next: page.props.posts.links.next
+    }
+}, {deep: true})
 
 const openEditModal = (post) => {
     editPost.value = post

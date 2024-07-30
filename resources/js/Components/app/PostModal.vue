@@ -13,11 +13,16 @@
             type: Object,
             required: true
         },
+        group: {
+            type: Object,
+            default: null
+        },
         modelValue: Boolean
     })
 
     const form = useForm({
         body: '',
+        group_id: null,
         attachments: [],
         deleted_file_ids: [],
         _method: 'POST'
@@ -25,6 +30,7 @@
 
     const attachmentFiles = ref([])
     const formErrors = ref({})
+    const attachmentErrors = ref([])
 
     watch(() => props.post, () => {
             form.body = props.post.body || ''
@@ -53,9 +59,11 @@
         }
     }
 
-    const attachmentErrors = ref([])
-
     const submit = () => {
+
+        if(props.group){
+            form.group_id = props.group.id
+        }
 
         form.attachments = attachmentFiles.value.map(myFile => myFile.file)
 
@@ -72,7 +80,7 @@
             })
         } else {
             form.post(route('post.store'), {
-                onSuccess: () => {
+                onSuccess: (response) => {
                     closeModal()
                 },
                 onError: (errors) => {
@@ -163,7 +171,6 @@
                 return true
             }
         }
-        console.log(attachmentFiles.value)
         return false
     })
 

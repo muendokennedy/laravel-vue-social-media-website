@@ -15,18 +15,9 @@ class HomeController extends Controller
     //
     public function index(Request $request)
     {
-        $userId = auth()->user()->id;
+        $userId = auth()->id();
 
-        $posts = Post::query()
-                    ->withCount('reactions')
-                    ->with([
-                        'comments' => function($query){
-                            $query->withCount('reactions');
-                        },
-                        'reactions' => function($query) use ($userId){
-                        $query->where('user_id', $userId);
-                    }])
-                    ->latest()->paginate(5);
+        $posts = Post::postsForTimeline($userId)->paginate(5);
 
         $posts = PostResource::collection($posts);
 

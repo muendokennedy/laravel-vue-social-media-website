@@ -11,6 +11,8 @@ import UserListItem from '@/Components/app/UserListItem.vue'
 import TextInput from '@/Components/TextInput.vue'
 import GroupEditForm from '@/Components/app/GroupEditForm.vue'
 import GroupInfo from '@/Components/app/GroupInfo.vue'
+import PostList from '@/Components/app/PostList.vue'
+import CreatePost from '@/Components/app/CreatePost.vue';
 
 const props = defineProps({
     group: {
@@ -24,6 +26,9 @@ const props = defineProps({
     },
     requests: {
         type: Array
+    },
+    posts: {
+        type: Object
     }
 })
 
@@ -246,8 +251,9 @@ const updateGroupInformation = () => {
               </Tab>
             </TabList>
             <TabPanels class="mt-2">
-              <TabPanel class="bg-white p-3 shadow">
-                Posts
+              <TabPanel class="">
+                <CreatePost :group="group"/>
+                <PostList :posts="posts.data" class="flex-1"/>
               </TabPanel>
               <TabPanel v-if="isJoinedToGroup">
                 <div class="mb-3">

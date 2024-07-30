@@ -51,7 +51,8 @@ class StorePostRequest extends FormRequest
                 'file',
                 File::types(self::$extensions)
                 ],
-            'user_id' => 'numeric'
+            'user_id' => 'numeric',
+            'group_id' => 'nullable | exists:groups,id'
         ];
     }
 

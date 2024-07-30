@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Post;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +18,8 @@ class Post extends Model
 
     protected $fillable = [
       'user_id',
-      'body'
+      'body',
+      'group_id'
     ];
 
     public function user(): BelongsTo
@@ -44,5 +47,20 @@ class Post extends Model
     public function latest5Comments(): HasMany
     {
        return $this->hasMany(Comment::class);
+    }
+
+    // TODO consider using a local scope for this
+    public static function postsForTimeline($userId): Builder
+    {
+        return Post::query()
+                    ->withCount('reactions')
+                    ->with([
+                        'comments' => function($query){
+                            $query->withCount('reactions');
+                        },
+                        'reactions' => function($query) use ($userId){
+                        $query->where('user_id', $userId);
+                    }])
+                    ->latest();
     }
 }

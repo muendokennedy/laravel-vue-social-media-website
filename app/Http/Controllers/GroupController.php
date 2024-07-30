@@ -9,9 +9,11 @@ use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Http\Resources\GroupUserResource;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Models\GroupUser;
+use App\Models\Post;
 use App\Models\User;
 use App\Notifications\GroupInvitationRequestApproved;
 use App\Notifications\GroupIvitationAccepted;
@@ -32,11 +34,21 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function groupProfile(Group $group): Response
+    public function groupProfile(Request $request, Group $group)
     {
         //
 
         $group->load('currentUserGroup');
+
+        $userId = auth()->id();
+
+        $posts = Post::postsForTimeline($userId)
+                        ->where('group_id', $group->id)
+                        ->paginate(5);
+
+        if($request->wantsJson()){
+            return PostResource::collection($posts);
+        }
 
         $users = User::query()
                     ->select(['users.*', 'gu.role', 'gu.status', 'gu.group_id'])
@@ -50,6 +62,7 @@ class GroupController extends Controller
         return Inertia::render('Group/View', [
             'success' => session('success'),
             'group' => new GroupResource($group),
+            'posts' => PostResource::collection($posts),
             'users' => GroupUserResource::collection($users),
             'requests' => UserResource::collection($requests)
         ]);

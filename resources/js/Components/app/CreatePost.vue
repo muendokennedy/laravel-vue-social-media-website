@@ -5,7 +5,11 @@ import PostModal from '@/Components/app/PostModal.vue'
 import { usePage } from '@inertiajs/vue3';
 
 defineProps({
-    placeHolder: String
+    placeHolder: String,
+    group: {
+        type: Object,
+        default: null
+    }
 })
 
 const authUser = usePage().props.auth.user
@@ -26,7 +30,7 @@ const showCreatePostModal = () => {
 <template>
     <div class="p-4 bg-white rounded-lg border mb-3">
         <div @click="showCreatePostModal" class="py-2 px-3 border-2 rounded-md border-gray-200 text-gray-500 cursor-pointer mb-3 w-full">Click here to create new post</div>
-        <PostModal :post="newPost" v-model="showModal"/>
+        <PostModal :post="newPost" :group="group" v-model="showModal"/>
     </div>
 </template>
 <style scoped>
