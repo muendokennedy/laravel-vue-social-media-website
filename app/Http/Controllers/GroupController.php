@@ -42,9 +42,23 @@ class GroupController extends Controller
 
         $userId = auth()->id();
 
-        $posts = Post::postsForTimeline($userId)
-                        ->where('group_id', $group->id)
-                        ->paginate(5);
+        if($group->hasApprovedUser($userId)){
+            $posts = Post::postsForTimeline($userId)
+                            ->where('group_id', $group->id)
+                            ->paginate(5);
+            $posts = PostResource::collection($posts);
+        } else {
+            $posts = null;
+
+            return Inertia::render('Group/View', [
+                'success' => session('success'),
+                'group' => new GroupResource($group),
+                'posts' => $posts,
+                'users' => [],
+                'requests' => []
+            ]);
+        }
+
 
         if($request->wantsJson()){
             return PostResource::collection($posts);
@@ -62,7 +76,7 @@ class GroupController extends Controller
         return Inertia::render('Group/View', [
             'success' => session('success'),
             'group' => new GroupResource($group),
-            'posts' => PostResource::collection($posts),
+            'posts' => $posts,
             'users' => GroupUserResource::collection($users),
             'requests' => UserResource::collection($requests)
         ]);

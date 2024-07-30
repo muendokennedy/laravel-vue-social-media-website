@@ -16,8 +16,8 @@ const props = defineProps({
 const page = usePage()
 
 const allPosts =  ref({
-    data: page.props.posts.data,
-    next: page.props.posts.links.next
+    data: [],
+    next: null
 })
 
 const authUser = usePage().props.auth.user
@@ -53,11 +53,13 @@ const loadMore = () => {
 
 watch(() => page.props.posts, () => {
     console.log('The watch happened')
-    allPosts.value = {
-        data: page.props.posts.data,
-        next: page.props.posts.links.next
+    if(page.props.posts){
+        allPosts.value = {
+            data: page.props.posts.data,
+            next: page.props.posts.links.next
+        }
     }
-}, {deep: true})
+}, {deep: true, immediate: true})
 
 const openEditModal = (post) => {
     editPost.value = post

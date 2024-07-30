@@ -251,9 +251,14 @@ const updateGroupInformation = () => {
               </Tab>
             </TabList>
             <TabPanels class="mt-2">
-              <TabPanel class="">
-                <CreatePost :group="group"/>
-                <PostList :posts="posts.data" class="flex-1"/>
+              <TabPanel>
+                <template v-if="posts">
+                    <CreatePost :group="group"/>
+                    <PostList :posts="posts.data" class="flex-1"/>
+                </template>
+                <div v-else class="py-8 text-center">
+                    You do not have permission to view posts in this group
+                </div>
               </TabPanel>
               <TabPanel v-if="isJoinedToGroup">
                 <div class="mb-3">

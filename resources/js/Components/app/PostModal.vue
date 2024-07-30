@@ -225,6 +225,7 @@
                     </DialogTitle>
                     <div class="p-4">
                         <PostUserInfo :post="post" :show-time="false" class="mb-4"/>
+                        <div v-if="formErrors.group_id" class="bg-red-400 py-2 px-3 text-white rounded mb-3">{{ formErrors.group_id }}</div>
                         <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
                         <div v-if="showExtensionText" class="border-l-4 border-amber-500 py-2 px-3 bg-amber-100 mt-3 text-gray-800">
                             File must be one of the following extensions:
