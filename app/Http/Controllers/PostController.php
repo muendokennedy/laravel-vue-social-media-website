@@ -11,6 +11,8 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostAttachment;
 use App\Models\Reaction;
+use App\Notifications\CommentDeleted;
+use App\Notifications\PostDeleted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -155,8 +157,12 @@ class PostController extends Controller
     {
         $currentUserId = auth()->id();
 
-        if($post->group && $post->group->isAdmin($currentUserId) || $post->isOwner($currentUserId)){
+        if($post->isOwner($currentUserId) || $post->group && $post->group->isAdmin($currentUserId)){
             $post->delete();
+
+            if(!$post->isOwner($currentUserId)){
+                $post->user->notify(new PostDeleted($post->group, auth()->user()->name));
+            }
             return back();
         }
         return response("You do not have permission to delete this post", 403);
@@ -234,8 +240,13 @@ class PostController extends Controller
 
         $currentUserId = auth()->id();
 
-        if($comment->isOwner($currentUserId) || $post->group && $post->group->isAdmin($currentUserId) || $post->isOwner($currentUserId)){
+        if($comment->isOwner($currentUserId) || $post->isOwner($currentUserId)){
             $comment->delete();
+
+            if(!$comment->isOwner($currentUserId)){
+                $comment->user->notify(new CommentDeleted($comment, $post, $comment->post->group->name, auth()->user()->name));
+            }
+
             return response()->noContent();
         }
         return response('You do not have permission to delete this comment', 403);

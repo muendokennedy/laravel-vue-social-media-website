@@ -42,6 +42,6 @@ class Comment extends Model
     }
     public function isOwner($userId): bool
     {
-        return $this->user_id = $userId;
+        return $this->user_id === $userId;
     }
 }
