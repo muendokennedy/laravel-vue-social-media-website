@@ -84,6 +84,7 @@ class PostController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @throws \Exception
      */
     public function update(UpdatePostRequest $request, Post $post)
     {

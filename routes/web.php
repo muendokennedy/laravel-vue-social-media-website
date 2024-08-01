@@ -25,6 +25,7 @@ Route::get('/group/confirm-invitation/{token}', [GroupController::class, 'confir
      Route::post('/group/invite-user/{group:slug}', [GroupController::class, 'inviteUser'])->name('group.inviteUser');
      Route::post('/group/join/{group:slug}', [GroupController::class, 'joinGroup'])->name('group.join');
      Route::post('/group/approve-request/{group:slug}', [GroupController::class, 'approveRequest'])->name('group.approveRequest');
+     Route::delete('/group/remove-user/{group:slug}', [GroupController::class, 'deleteUser'])->name('group.removeUser');
      Route::post('/group/change-group-role/{group:slug}', [GroupController::class, 'changeGroupRole'])->name('group.changeRole');
      // Profile
      Route::post('/profile/update-profile-images', [ProfileController::class, 'updateImages'])->name('profile.updateImages');
