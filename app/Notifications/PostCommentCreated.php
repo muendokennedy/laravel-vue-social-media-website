@@ -2,19 +2,21 @@
 
 namespace App\Notifications;
 
+use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class GroupPostCommentCreated extends Notification
+class PostCommentCreated extends Notification
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(public Comment $comment, public User $user)
     {
         //
     }
@@ -35,8 +37,10 @@ class GroupPostCommentCreated extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
+                    ->greeting('Hello '. $this->user->name .'.')
+                    ->line('A new comment was added to your post')
+                    ->line('"'.$this->comment->comment.'"')
+                    ->action('View Post', url('/'))
                     ->line('Thank you for using our application!');
     }
 

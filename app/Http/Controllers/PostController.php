@@ -12,7 +12,9 @@ use App\Models\Post;
 use App\Models\PostAttachment;
 use App\Models\Reaction;
 use App\Notifications\CommentDeleted;
+use App\Notifications\GroupPostCommentCreated;
 use App\Notifications\GroupPostCreated;
+use App\Notifications\PostCommentCreated;
 use App\Notifications\PostDeleted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -240,6 +242,12 @@ class PostController extends Controller
             'user_id' => auth()->user()->id,
             'parent_id' => $data['parent_id'] ?: null
         ]);
+
+        $postOwner = $comment->post->user;
+
+        Notification::send($postOwner, new PostCommentCreated($comment, $postOwner));
+
+        // $post->user->notify(new GroupPostCommentCreated($comment));
 
         return response()->json(new CommentResource($comment), 201);
     }
