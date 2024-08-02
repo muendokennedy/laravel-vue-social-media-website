@@ -2,6 +2,9 @@
 
 namespace App\Notifications;
 
+use App\Models\Comment;
+use App\Models\Reaction;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -14,7 +17,7 @@ class ReactionAddedonPostComment extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(public Reaction $reaction, public Comment $comment, public User $user, public string $userName)
     {
         //
     }
@@ -35,8 +38,11 @@ class ReactionAddedonPostComment extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
+                    ->subject('Reaction Added on Comment')
+                    ->greeting('Hello ' .$this->user->name.'.')
+                    ->line('' .$this->userName. ' has placed a ' . $this->reaction->type . ' on your Comment: ')
+                    ->line('"'.$this->comment->comment.'"')
+                    ->action('View post', url('/'))
                     ->line('Thank you for using our application!');
     }
 

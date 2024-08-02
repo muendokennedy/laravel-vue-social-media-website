@@ -17,6 +17,7 @@ use App\Notifications\GroupPostCreated;
 use App\Notifications\PostCommentCreated;
 use App\Notifications\PostDeleted;
 use App\Notifications\ReactionAddedonPost;
+use App\Notifications\ReactionAddedonPostComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -309,12 +310,19 @@ class PostController extends Controller
         $reaction->delete();
        } else {
         $hasReaction = true;
-           Reaction::create([
+           $reaction = Reaction::create([
             'reactionable_id' => $comment->id,
             'reactionable_type' => Comment::class,
             'user_id' => $userId,
             'type' => $data['reaction']
            ]);
+
+           if(!$comment->isOwner(auth()->id())){
+
+            $commentOwner = $reaction->reactionable->user;
+
+            Notification::send($commentOwner, new ReactionAddedonPostComment($reaction, $comment, $commentOwner, auth()->user()->name));
+        }
        }
 
 
