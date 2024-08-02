@@ -12,9 +12,11 @@ use App\Models\Post;
 use App\Models\PostAttachment;
 use App\Models\Reaction;
 use App\Notifications\CommentDeleted;
+use App\Notifications\GroupPostCreated;
 use App\Notifications\PostDeleted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -58,6 +60,13 @@ class PostController extends Controller
                 'created_by' => $user->id
             ]);
 
+        }
+
+        $group = $post->group;
+
+        if($group){
+            $users = $group->approvedUsers()->where('users.id', '!=', $user->id)->get();
+            Notification::send($users, new GroupPostCreated($post, $group));
         }
 
         DB::commit();
