@@ -16,6 +16,7 @@ use App\Notifications\GroupPostCommentCreated;
 use App\Notifications\GroupPostCreated;
 use App\Notifications\PostCommentCreated;
 use App\Notifications\PostDeleted;
+use App\Notifications\ReactionAddedonPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -209,12 +210,20 @@ class PostController extends Controller
         $reaction->delete();
        } else {
         $hasReaction = true;
-           Reaction::create([
+        $reaction = Reaction::create([
             'reactionable_id' => $post->id,
             'reactionable_type' => Post::class,
             'user_id' => $userId,
             'type' => $data['reaction']
            ]);
+
+           if(!$post->isOwner(auth()->id())){
+
+               $postOwner = $reaction->reactionable->user;
+
+               Notification::send($postOwner, new ReactionAddedonPost($reaction, $postOwner, auth()->user()->name));
+           }
+
        }
 
 
@@ -246,8 +255,6 @@ class PostController extends Controller
         $postOwner = $comment->post->user;
 
         Notification::send($postOwner, new PostCommentCreated($comment, $postOwner));
-
-        // $post->user->notify(new GroupPostCommentCreated($comment));
 
         return response()->json(new CommentResource($comment), 201);
     }
