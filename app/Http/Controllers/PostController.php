@@ -7,6 +7,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\PostResource;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostAttachment;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
@@ -93,6 +95,9 @@ class PostController extends Controller
     public function show(Post $post)
     {
         //
+        return Inertia::render('Post/View', [
+            'post' => new PostResource($post)
+        ]);
     }
 
     /**

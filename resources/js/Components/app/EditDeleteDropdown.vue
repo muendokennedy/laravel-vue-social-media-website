@@ -1,7 +1,8 @@
 <script setup>
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon } from '@heroicons/vue/20/solid'
-import { usePage } from '@inertiajs/vue3'
+import { ChevronDownIcon, EyeIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon } from '@heroicons/vue/20/solid'
+import { ClipboardIcon } from '@heroicons/vue/24/outline'
+import { usePage, Link } from '@inertiajs/vue3'
 import { comment } from 'postcss';
 import { computed } from 'vue';
 
@@ -33,6 +34,17 @@ const deleteAllowed = computed(() => {
 
 defineEmits(['edit', 'delete'])
 
+const copyToClipboard = async () => {
+
+    const textToCopy = route('post.show', props.post.id)
+
+    try {
+        await navigator.clipboard.writeText(textToCopy)
+    } catch (error) {
+        console.log('Error: failed to copy, ', error)
+    }
+}
+
 </script>
 
 <template>
@@ -56,9 +68,40 @@ defineEmits(['edit', 'delete'])
             leave-to-class="transform scale-95 opacity-0"
         >
             <MenuItems
-            class="z-20 absolute right-0 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+            class="z-20 absolute right-0 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
             >
             <div class="px-1 py-1">
+                <MenuItem v-slot="{ active }">
+                <button
+                @click="copyToClipboard"
+                    :class="[
+                    active ? 'bg-indigo-500 text-white' : 'text-gray-900',
+                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                    ]"
+                >
+                    <ClipboardIcon
+                    :active="active"
+                    class="mr-2 h-5 w-5 text-indigo-400"
+                    aria-hidden="true"
+                    />
+                    copy post URL
+                </button>
+                </MenuItem>
+                <MenuItem v-slot="{ active }">
+                <Link :href="route('post.show', post.id)"
+                    :class="[
+                    active ? 'bg-indigo-500 text-white' : 'text-gray-900',
+                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                    ]"
+                >
+                    <EyeIcon
+                    :active="active"
+                    class="mr-2 h-5 w-5 text-indigo-400"
+                    aria-hidden="true"
+                    />
+                    Open post
+                </Link>
+                </MenuItem>
                 <MenuItem v-if="editAllowed" v-slot="{ active }">
                 <button
 

@@ -32,6 +32,7 @@ Route::get('/group/confirm-invitation/{token}', [GroupController::class, 'confir
      Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
      Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
      // Post
+     Route::get('/post/{post}', [PostController::class, 'show'])->name('post.show');
      Route::post('/post', [PostController::class, 'store'])->name('post.store');
      Route::put('/post/{post}', [PostController::class, 'update'])->name('post.update');
      Route::delete('/post/{post}', [PostController::class, 'destroy'])->name('post.destroy');
