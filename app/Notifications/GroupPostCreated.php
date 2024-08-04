@@ -38,7 +38,7 @@ class GroupPostCreated extends Notification
     {
         return (new MailMessage)
                     ->line('A new post was added in '.$this->group->name.' group.')
-                    ->action('View post', url('/'))
+                    ->action('View post', url(route('post.show', $this->post)))
                     ->line('Thank you for using our application!');
     }
 

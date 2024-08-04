@@ -41,7 +41,7 @@ class CommentDeleted extends Notification
     {
         return (new MailMessage)
                     ->line('This message is sent to you to inform you that the comment, "'.Str::words($this->comment->comment, 5).'" you made on a post in '.$this->groupName.' group has been deleted by the owner of the post '.$this->userName . '')
-                    ->action('View post here', url('/'))
+                    ->action('View post here', url(route('post.show', $this->post)))
                     ->line('Thank you for using our application!');
     }
 

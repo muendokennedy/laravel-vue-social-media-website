@@ -38,9 +38,9 @@ class PostCommentCreated extends Notification
     {
         return (new MailMessage)
                     ->greeting('Hello '. $this->user->name .'.')
-                    ->line('A new comment was added to your post')
+                    ->line(''.$this->comment->user->name.' added a new comment on your post.')
                     ->line('"'.$this->comment->comment.'"')
-                    ->action('View Post', url('/'))
+                    ->action('View Post', url(route('post.show', $this->comment->post)))
                     ->line('Thank you for using our application!');
     }
 

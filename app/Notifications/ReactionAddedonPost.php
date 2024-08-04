@@ -40,7 +40,7 @@ class ReactionAddedonPost extends Notification
                     ->subject('Reaction Added on post')
                     ->greeting('Hello ' .$this->user->name.'.')
                     ->line('' .$this->userName. ' has placed a ' . $this->reaction->type . ' on your post.')
-                    ->action('View post', url('/'))
+                    ->action('View post', url(route('post.show', $this->reaction->reactionable)))
                     ->line('Thank you for using our application!');
     }
 

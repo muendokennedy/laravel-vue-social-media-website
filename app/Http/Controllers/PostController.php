@@ -95,6 +95,14 @@ class PostController extends Controller
     public function show(Post $post)
     {
         //
+        $post->loadCount('reactions');
+
+        $post->load([
+            'comments' => function($query){
+                $query->withCount('reactions');
+            }
+        ]);
+
         return Inertia::render('Post/View', [
             'post' => new PostResource($post)
         ]);

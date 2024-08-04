@@ -42,7 +42,7 @@ class ReactionAddedonPostComment extends Notification
                     ->greeting('Hello ' .$this->user->name.'.')
                     ->line('' .$this->userName. ' has placed a ' . $this->reaction->type . ' on your Comment: ')
                     ->line('"'.$this->comment->comment.'"')
-                    ->action('View post', url('/'))
+                    ->action('View post', url(route('post.show', $this->comment->post)))
                     ->line('Thank you for using our application!');
     }
 
