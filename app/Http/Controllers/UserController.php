@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Follower;
 use App\Models\User;
+use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -31,6 +32,8 @@ class UserController extends Controller
 
             $message = "You unfollowed {$user->name} successfully";
         }
+
+        $user->notify(new UserFollowed(auth()->user(), $data['follow']));
 
         return back()->with('success', $message);
     }
