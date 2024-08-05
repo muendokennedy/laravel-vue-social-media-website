@@ -24,9 +24,9 @@ class GroupResource extends JsonResource
             'slug' => $this->slug,
             'cover_url' => $this->cover_path ? Storage::url($this->cover_path) : '/images/coverimageholder.webp',
             'thumbnail_url' => $this->thumbnail_path ? Storage::url($this->thumbnail_path) : '/images/useravatar4.webp',
-            'description' => Str::words($this->about, 10),
+            'description' => Str::words(strip_tags($this->about), 10),
             'auto_approval' => $this->auto_approval,
-            'about' => $this->about,
+            'about' => strip_tags($this->about),
             'user_id' => $this->user_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
