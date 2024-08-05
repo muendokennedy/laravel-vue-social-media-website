@@ -305,9 +305,14 @@ const deleteUser = (user) => {
                 Photos
               </TabPanel>
               <TabPanel class="bg-white p-3 shadow">
-                <GroupEditForm v-if="isCurrentUserAdmin" :form="aboutForm"/>
-                <GroupInfo v-else-if="!isCurrentUserAdmin" :form="aboutForm"/>
-                <PrimaryButton v-if="isCurrentUserAdmin" @click="updateGroupInformation">Submit</PrimaryButton>
+                <template v-if="isCurrentUserAdmin">
+                    <GroupEditForm :form="aboutForm"/>
+                    <PrimaryButton @click="updateGroupInformation">Submit</PrimaryButton>
+                </template>
+                <div v-else v-html="group.about">
+
+                </div>
+                <!-- <GroupInfo v-else-if="!isCurrentUserAdmin" :form="aboutForm"/> -->
               </TabPanel>
             </TabPanels>
           </TabGroup>
