@@ -309,10 +309,9 @@ const deleteUser = (user) => {
                     <GroupEditForm :form="aboutForm"/>
                     <PrimaryButton @click="updateGroupInformation">Submit</PrimaryButton>
                 </template>
-                <div v-else v-html="group.about">
-
-                </div>
-                <!-- <GroupInfo v-else-if="!isCurrentUserAdmin" :form="aboutForm"/> -->
+                <template v-else >
+                    <GroupInfo :group="group"/>
+                </template>
               </TabPanel>
             </TabPanels>
           </TabGroup>
