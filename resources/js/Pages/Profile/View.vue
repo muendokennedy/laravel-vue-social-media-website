@@ -9,17 +9,11 @@ import DangerButton from '@/Components/DangerButton.vue'
 import { computed, ref } from 'vue';
 import { XMarkIcon, CheckCircleIcon, CameraIcon } from '@heroicons/vue/24/solid'
 import { useForm } from '@inertiajs/vue3'
+import CreatePost from '@/Components/app/CreatePost.vue'
+import PostList from '@/Components/app/PostList.vue'
+import UserListItem from '@/Components/app/UserListItem.vue';
+import TextInput from '@/Components/TextInput.vue';
 
-const imagesForm = useForm({
-    cover: null,
-    avatar: null,
-})
-
-const authUser = usePage().props.auth.user;
-
-const showNotification = ref(true)
-
-const isMyProfile = computed(() => authUser && authUser.id === props.user.id)
 
 const props = defineProps({
     mustVerifyEmail: {
@@ -40,11 +34,32 @@ const props = defineProps({
     },
     followerCount: {
         type: Number
+    },
+    posts: {
+        type: Object
+    },
+    followers: {
+        type: Array
+    },
+    followings: {
+        type: Array
     }
 });
 
+const imagesForm = useForm({
+    cover: null,
+    avatar: null,
+})
+
+const authUser = usePage().props.auth.user
+
+const showNotification = ref(true)
+
+const isMyProfile = computed(() => authUser && authUser.id === props.user.id)
 const coverImageSource = ref(null)
 const avatarImageSource = ref(null)
+const searchFollowersKeyword = ref('')
+const searchFollowingsKeyword = ref('')
 
 
 
@@ -124,73 +139,75 @@ const followUser = () => {
 <template>
     <AuthenticatedLayout>
         <div class="max-w-[768px] mx-auto h-full overflow-auto">
-            <div v-show="showNotification && success" class="my-2 py-2 px-3 text-white font-medium text-sm bg-emerald-500">
-                {{ success }}
-            </div>
-            <div v-show="imagesForm.errors.cover" class="my-2 py-2 px-3 text-white font-medium text-sm bg-red-400">
-                {{ imagesForm.errors.cover }}
-            </div>
-            <div v-show="imagesForm.errors.avatar" class="my-2 py-2 px-3 text-white font-medium text-sm bg-red-400">
-                {{ imagesForm.errors.avatar }}
-            </div>
-        <div class="relative bg-white group">
-            <img :src="coverImageSource ?? user.cover_url ?? '/images/coverimageholder.webp'" alt="cover image" class="w-full h-52 object-cover">
-            <div v-if="isMyProfile" class="absolute top-2 right-2">
-                <button v-if="!coverImageSource" class="opacity-0 group-hover:opacity-100 flex items-center bg-gray-50 hover:bg-gray-100 text-gray-800 py-1 px-2 text-xs">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3 mr-2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
-                    </svg>
-
-                    Update Cover Image
-                    <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" @change="onCoverChange">
-                </button>
-                <div v-else class="flex gap-2 bg-white p-2 opacity-0 group-hover:opacity-100">
-                    <button @click="cancelCoverImage" class="flex items-center bg-gray-50 hover:bg-gray-100 text-gray-800 py-1 px-2 text-xs">
-                        <XMarkIcon class="size-3 mr-2"/>
-                        Cancel
-                    </button>
-                    <button @click="submitCoverImage" class="flex items-center bg-gray-800 hover:bg-gray-900 text-gray-100 py-1 px-2 text-xs">
-                        <CheckCircleIcon class="size-3 mr-2"/>
-                        Submit
-                    </button>
+            <div class="px-4 pt-0">
+                <div v-show="showNotification && success" class="my-2 py-2 px-3 text-white font-medium text-sm bg-emerald-500">
+                    {{ success }}
                 </div>
-            </div>
-            <div class="flex">
-                <div class="flex items-center justify-center relative group/avatar -mt-16 ml-12 w-32 h-32 rounded-full">
-                    <img :src="avatarImageSource ?? user.avatar_url ?? '/images/useravatar4.webp'" alt="user avatar" class="w-full h-full object-cover rounded-full">
-                    <div v-if="isMyProfile">
-                        <button v-if="!avatarImageSource" class="absolute bg-black/50 text-white rounded-full inset-0 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100">
-                            <CameraIcon  class="size-8 mr-2"/>
-                            <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" @change="onAvatarChange">
+                <div v-show="imagesForm.errors.cover" class="my-2 py-2 px-3 text-white font-medium text-sm bg-red-400">
+                    {{ imagesForm.errors.cover }}
+                </div>
+                <div v-show="imagesForm.errors.avatar" class="my-2 py-2 px-3 text-white font-medium text-sm bg-red-400">
+                    {{ imagesForm.errors.avatar }}
+                </div>
+                <div class="relative bg-white group px-4">
+                    <img :src="coverImageSource ?? user.cover_url ?? '/images/coverimageholder.webp'" alt="cover image" class="w-full h-52 object-cover">
+                    <div v-if="isMyProfile" class="absolute top-2 right-2">
+                        <button v-if="!coverImageSource" class="opacity-0 group-hover:opacity-100 flex items-center bg-gray-50 hover:bg-gray-100 text-gray-800 py-1 px-2 text-xs">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3 mr-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                            </svg>
+
+                            Update Cover Image
+                            <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" @change="onCoverChange">
                         </button>
-                        <div v-else class="absolute right-0 top-1 flex gap-2 flex-col">
-                            <button @click="cancelAvatarImage" class="w-7 h-7 flex items-center justify-center bg-red-500/80 text-white rounded-full">
-                                <XMarkIcon class="size-5"/>
+                        <div v-else class="flex gap-2 bg-white p-2 opacity-0 group-hover:opacity-100">
+                            <button @click="cancelCoverImage" class="flex items-center bg-gray-50 hover:bg-gray-100 text-gray-800 py-1 px-2 text-xs">
+                                <XMarkIcon class="size-3 mr-2"/>
+                                Cancel
                             </button>
-                            <button @click="submitAvatarImage" class="w-7 h-7 flex items-center justify-center bg-emerald-500/80 text-white rounded-full">
-                                <CheckCircleIcon class="size-5"/>
+                            <button @click="submitCoverImage" class="flex items-center bg-gray-800 hover:bg-gray-900 text-gray-100 py-1 px-2 text-xs">
+                                <CheckCircleIcon class="size-3 mr-2"/>
+                                Submit
                             </button>
                         </div>
                     </div>
-                </div>
-                <div class="flex justify-between items-center flex-1 p-4">
-                    <div>
-                        <h2 class="font-bold text-lg">{{ user.name }}</h2>
-                        <p class="text-xs text-gray-500">{{ followerCount }} {{ followerCount === 1 ? ' follower' : ' followers'}}</p>
-                    </div>
-                    <div>
-                        <PrimaryButton v-if="!isCurrentUserFollower" @click="followUser">
-                            Follow user
-                        </PrimaryButton>
-                        <DangerButton v-else-if="isCurrentUserFollower" @click="followUser">
-                            Unfollow user
-                        </DangerButton>
+                    <div class="flex">
+                        <div class="flex items-center justify-center relative group/avatar -mt-16 ml-12 w-32 h-32 rounded-full">
+                            <img :src="avatarImageSource ?? user.avatar_url ?? '/images/useravatar4.webp'" alt="user avatar" class="w-full h-full object-cover rounded-full">
+                            <div v-if="isMyProfile">
+                                <button v-if="!avatarImageSource" class="absolute bg-black/50 text-white rounded-full inset-0 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100">
+                                    <CameraIcon  class="size-8 mr-2"/>
+                                    <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" @change="onAvatarChange">
+                                </button>
+                                <div v-else class="absolute right-0 top-1 flex gap-2 flex-col">
+                                    <button @click="cancelAvatarImage" class="w-7 h-7 flex items-center justify-center bg-red-500/80 text-white rounded-full">
+                                        <XMarkIcon class="size-5"/>
+                                    </button>
+                                    <button @click="submitAvatarImage" class="w-7 h-7 flex items-center justify-center bg-emerald-500/80 text-white rounded-full">
+                                        <CheckCircleIcon class="size-5"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center flex-1 p-4">
+                            <div>
+                                <h2 class="font-bold text-lg">{{ user.name }}</h2>
+                                <p class="text-xs text-gray-500">{{ followerCount }} {{ followerCount === 1 ? ' follower' : ' followers'}}</p>
+                            </div>
+                            <div>
+                                <PrimaryButton v-if="!isCurrentUserFollower" @click="followUser">
+                                    Follow user
+                                </PrimaryButton>
+                                <DangerButton v-else-if="isCurrentUserFollower" @click="followUser">
+                                    Unfollow user
+                                </DangerButton>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="border-t">
+        <div class="border-t px-4">
           <TabGroup>
             <TabList class="flex bg-white">
               <Tab v-slot="{ selected }" as="template">
@@ -210,19 +227,47 @@ const followUser = () => {
                </Tab>
             </TabList>
             <TabPanels class="mt-2">
-              <TabPanel class="bg-white p-3 shadow">
-                These are my posts
+              <TabPanel>
+                <template v-if="posts">
+                    <CreatePost/>
+                    <PostList :posts="posts.data" class="flex-1"/>
+                </template>
+                <div v-else class="py-8 text-center">
+                    You do not have permission to view posts in this group
+                </div>
               </TabPanel>
-              <TabPanel class="bg-white p-3 shadow">
-                I follow all these people
+              <TabPanel>
+                <div class="mb-3">
+                    <TextInput v-model="searchFollowingsKeyword" placeHolder="Search here..." class="w-full"/>
+                </div>
+                <div v-if="followings.length" class="grid grid-cols-2 gap-3">
+                    <UserListItem v-for="(user, index) in followings"
+                        :user="user"
+                        :key="index"
+                        class="shadow"/>
+                </div>
+                <div v-else class="text-center p-8">
+                    {{ isMyProfile ? 'You have not followed anybody' : 'The  user has not followed anybody' }}
+                </div>
               </TabPanel>
-              <TabPanel class="bg-white p-3 shadow">
-                These are my followers
+              <TabPanel>
+                <div class="mb-3">
+                    <TextInput v-model="searchFollowersKeyword" placeHolder="Search here..." class="w-full"/>
+                </div>
+                <div v-if="followers.length" class="grid grid-cols-2 gap-3">
+                <UserListItem v-for="(user, index) in followers"
+                    :user="user"
+                    :key="index"
+                    class="shadow"/>
+                </div>
+                <div v-else class="text-center p-8">
+                    {{isMyProfile ? 'You have no followers' : 'The user does not have followers'}}
+                </div>
               </TabPanel>
-              <TabPanel class="bg-white p-3 shadow">
+              <TabPanel>
                 These are my Photos
               </TabPanel>
-              <TabPanel class="" v-if="isMyProfile">
+              <TabPanel v-if="isMyProfile">
                   <Edit :mustVerifyEmail="mustVerifyEmail" :status="status"/>
               </TabPanel>
             </TabPanels>

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use App\Models\Follower;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -28,6 +30,20 @@ class ProfileController extends Controller
             ])->exists();
         }
 
+        $posts = Post::postsForTimeline(auth()->id())->where('user_id', $user->id)->paginate(5);
+
+        $followers = User::query()
+                        ->select('users.*')
+                        ->join('followers AS f', 'f.follower_id', 'users.id')
+                        ->where('f.user_id', $user->id)
+                        ->get();
+
+        $followings = User::query()
+                        ->select('users.*')
+                        ->join('followers AS f', 'f.user_id', 'users.id')
+                        ->where('f.follower_id', $user->id)
+                        ->get();
+
         $followerCount = Follower::where('user_id', $user->id)->count();
 
         return Inertia::render('Profile/View', [
@@ -36,7 +52,10 @@ class ProfileController extends Controller
             'success' => session('success'),
             'followerCount' => $followerCount,
             'isCurrentUserFollower' => $isCurrentUserFollower,
-            'user' => new UserResource($user)
+            'user' => new UserResource($user),
+            'posts' => PostResource::collection($posts),
+            'followers' => UserResource::collection($followers),
+            'followings' => UserResource::collection($followings)
         ]);
     }
     /**
