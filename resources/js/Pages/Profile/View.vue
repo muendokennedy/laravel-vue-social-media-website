@@ -36,7 +36,7 @@ const props = defineProps({
         type: Number
     },
     posts: {
-        type: Object
+        type: Array
     },
     followers: {
         type: Array
@@ -226,6 +226,7 @@ const followUser = () => {
                   <TabItem text='Profile information' :selected="selected"></TabItem>
                </Tab>
             </TabList>
+
             <TabPanels class="mt-2">
               <TabPanel>
                 <template v-if="posts">

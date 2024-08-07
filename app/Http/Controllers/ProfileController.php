@@ -15,11 +15,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Inertia\Response;
+
 
 class ProfileController extends Controller
 {
-    public function index(User $user): Response
+    public function index(Request $request, User $user)
     {
         $isCurrentUserFollower = false;
 
@@ -31,6 +31,12 @@ class ProfileController extends Controller
         }
 
         $posts = Post::postsForTimeline(auth()->id())->where('user_id', $user->id)->paginate(5);
+
+        $posts = PostResource::collection($posts);
+
+        if($request->wantsJson()){
+            return $posts;
+        }
 
         $followers = User::query()
                         ->select('users.*')
@@ -53,7 +59,7 @@ class ProfileController extends Controller
             'followerCount' => $followerCount,
             'isCurrentUserFollower' => $isCurrentUserFollower,
             'user' => new UserResource($user),
-            'posts' => PostResource::collection($posts),
+            'posts' => $posts,
             'followers' => UserResource::collection($followers),
             'followings' => UserResource::collection($followings)
         ]);
