@@ -13,6 +13,6 @@ defineProps({
 </div>
 <div class="mb-3">
     <label for="about" class="font-bold">Group Description:</label>
-    <div v-html="group.about"></div>
+    <div class="ck-content-output" v-html="group.about"></div>
 </div>
 </template>

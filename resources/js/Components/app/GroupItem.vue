@@ -14,7 +14,7 @@ defineProps({
                     <h3 class="font-black text-xl">{{group.name}}</h3>
                     {{ group.status === 'approved' ? (group.role === 'admin' ? group.role : '') : 'pending' }}
                 </div>
-                <p class="text-xs text-gray-400">{{ group.description }}</p>
+                <p class="text-xs text-gray-400" v-html="group.description"></p>
             </div>
         </Link>
     </div>

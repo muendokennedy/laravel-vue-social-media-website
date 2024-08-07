@@ -195,7 +195,7 @@ const followUser = () => {
                                 <h2 class="font-bold text-lg">{{ user.name }}</h2>
                                 <p class="text-xs text-gray-500">{{ followerCount }} {{ followerCount === 1 ? ' follower' : ' followers'}}</p>
                             </div>
-                            <div>
+                            <div v-if="!isMyProfile">
                                 <PrimaryButton v-if="!isCurrentUserFollower" @click="followUser">
                                     Follow user
                                 </PrimaryButton>
