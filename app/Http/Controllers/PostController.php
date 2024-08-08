@@ -14,8 +14,8 @@ use App\Models\PostAttachment;
 use App\Models\Reaction;
 use App\Notifications\CommentDeleted;
 use App\Notifications\GroupPostCommentCreated;
-use App\Notifications\GroupPostCreated;
 use App\Notifications\PostCommentCreated;
+use App\Notifications\PostCreated;
 use App\Notifications\PostDeleted;
 use App\Notifications\ReactionAddedonPost;
 use App\Notifications\ReactionAddedonPostComment;
@@ -72,8 +72,16 @@ class PostController extends Controller
 
         if($group){
             $users = $group->approvedUsers()->where('users.id', '!=', $user->id)->get();
-            Notification::send($users, new GroupPostCreated($post, $group));
+            Notification::send($users, new PostCreated($post, $user, $group));
+
+        } else {
+
+            $followers = $user->followers;
+
+            Notification::send($followers, new PostCreated($post, $user));
+
         }
+
 
         DB::commit();
 
