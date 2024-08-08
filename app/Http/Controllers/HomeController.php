@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Enums\GroupUserStatus;
 use App\Http\Resources\GroupResource;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $userId = auth()->id();
+
+        $user = $request->user();
 
         $posts = Post::postsForTimeline($userId)
                 ->leftJoin('followers AS f', function($join) use ($userId) {
@@ -57,7 +60,8 @@ class HomeController extends Controller
 
         return Inertia::render('Home', [
             'posts' => $posts,
-            'groups' => GroupResource::collection($groups)
+            'groups' => GroupResource::collection($groups),
+            'followings' => UserResource::collection($user->followings)
         ]);
     }
 }

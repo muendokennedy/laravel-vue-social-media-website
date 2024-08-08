@@ -1,8 +1,11 @@
 <script setup>
-import UserListItem from './UserListItem.vue';
 import TextInput from '../TextInput.vue';
 import { ref } from 'vue';
+import UserListItem from '@/Components/app/UserListItem.vue'
 
+defineProps({
+    users: Array
+})
 const searchKeyword = ref('')
 
 </script>
@@ -13,7 +16,10 @@ const searchKeyword = ref('')
                 You do not have any friends yet.
             </div>
             <div v-else>
-
+                <UserListItem v-for="(user, index) in users"
+                        :user="user"
+                        :key="index"
+                        class="shadow"/>
             </div>
         </div>
 </template>

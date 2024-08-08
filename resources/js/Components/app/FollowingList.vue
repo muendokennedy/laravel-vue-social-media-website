@@ -2,6 +2,10 @@
 import FollowingListItems from './FollowingListItems.vue'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 
+defineProps({
+    users: Array
+})
+
 </script>
 <template>
     <div class="px-3 bg-white h-full rounded border py-3 overflow-hidden">
@@ -16,7 +20,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
                     </div>
                 </DisclosureButton>
                 <DisclosurePanel>
-                    <FollowingListItems/>
+                    <FollowingListItems :users="users"/>
                 </DisclosurePanel>
                 <div class="flex justify-end">
                 </div>
@@ -24,7 +28,7 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
         </div>
         <div class="h-full overflow-hidden flex-col hidden lg:flex">
             <h2 class="text-xl font-bold">Following</h2>
-            <FollowingListItems/>
+            <FollowingListItems :users="users"/>
         </div>
     </div>
 </template>
