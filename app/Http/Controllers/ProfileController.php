@@ -46,7 +46,9 @@ class ProfileController extends Controller
 
         $photos = PostAttachment::query()
                         ->where('mime', 'like', 'image/%')
-                        ->where('created_by', $user->id)->get();
+                        ->where('created_by', $user->id)
+                        ->latest()
+                        ->get();
 
 
         $followerCount = Follower::where('user_id', $user->id)->count();
