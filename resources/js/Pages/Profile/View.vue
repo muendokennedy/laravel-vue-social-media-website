@@ -270,8 +270,10 @@ const followUser = () => {
                 </div>
               </TabPanel>
               <TabPanel>
-                <pre>{{ previewAttachmentPost }}</pre>
-                <TabPhotos :photos="photos"/>
+                <TabPhotos v-if="photos.length" :photos="photos"/>
+                <div v-else class="p-8 text-center">
+                    {{ isMyProfile ? 'You do not have any photos' : 'This user does not have any photos' }}
+                </div>
               </TabPanel>
               <TabPanel v-if="isMyProfile">
                   <Edit :mustVerifyEmail="mustVerifyEmail" :status="status"/>
