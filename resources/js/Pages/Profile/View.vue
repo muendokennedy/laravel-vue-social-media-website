@@ -11,8 +11,9 @@ import { XMarkIcon, CheckCircleIcon, CameraIcon } from '@heroicons/vue/24/solid'
 import { useForm } from '@inertiajs/vue3'
 import CreatePost from '@/Components/app/CreatePost.vue'
 import PostList from '@/Components/app/PostList.vue'
-import UserListItem from '@/Components/app/UserListItem.vue';
-import TextInput from '@/Components/TextInput.vue';
+import UserListItem from '@/Components/app/UserListItem.vue'
+import TextInput from '@/Components/TextInput.vue'
+import TabPhotos from './TabPhotos.vue'
 
 
 const props = defineProps({
@@ -42,6 +43,9 @@ const props = defineProps({
         type: Array
     },
     followings: {
+        type: Array
+    },
+    photos: {
         type: Array
     }
 });
@@ -266,7 +270,8 @@ const followUser = () => {
                 </div>
               </TabPanel>
               <TabPanel>
-                These are my Photos
+                <pre>{{ previewAttachmentPost }}</pre>
+                <TabPhotos :photos="photos"/>
               </TabPanel>
               <TabPanel v-if="isMyProfile">
                   <Edit :mustVerifyEmail="mustVerifyEmail" :status="status"/>
