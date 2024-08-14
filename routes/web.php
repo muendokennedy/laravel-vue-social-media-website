@@ -47,6 +47,8 @@ Route::get('/group/confirm-invitation/{token}', [GroupController::class, 'confir
      Route::delete('/comment/{comment}', [PostController::class, 'deleteComment'])->name('comment.delete');
      Route::put('/comment/{comment}', [PostController::class, 'updateComment'])->name('comment.update');
      Route::post('/comment/{comment}/reaction', [PostController::class, 'commentReaction'])->name('comment.reaction');
+     // Open AI
+     Route::post('/ai-post', [PostController::class, 'generatePostContentUsingOpenAI'])->name('post.ai.generate');
 
  });
 

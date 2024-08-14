@@ -6,6 +6,7 @@
     import { useForm, usePage } from '@inertiajs/vue3';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     import { isImage } from '@/helpers.js'
+    import axiosClient from '@/axiosClient.js'
 
 
     const props = defineProps({
@@ -179,6 +180,21 @@
         form.deleted_file_ids = form.deleted_file_ids.filter(id => file.id !== id)
     }
 
+    const getAIContent = () => {
+
+        if(!form.body){
+            return
+        }
+
+        axiosClient.post(route('post.ai.generate'), {
+            prompt: form.body
+        }).then(({data}) => {
+            form.body = data.content
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
 </script>
 <template>
     <teleport to="body">
@@ -234,6 +250,7 @@
                         <div v-if="formErrors.attachments" class="border-l-4 border-red-500 py-2 px-3 bg-red-100 mt-3 text-gray-800">
                             {{ formErrors.attachments }}
                         </div>
+                        <button @click="getAIContent">AI Post</button>
                         <div class="grid gap-3 my-3"
                         :class="[
                             computedAttachments.length === 1 ? 'grid-cols-1' :  'grid-cols-2'

@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class PostController extends Controller
 {
@@ -356,5 +357,25 @@ class PostController extends Controller
         'num_of_reactions' =>  $reactions,
         'current_user_has_reaction' => $hasReaction
        ]);
+    }
+
+    public function generatePostContentUsingOpenAI(Request $request)
+    {
+        $prompt = $request->get('prompt');
+
+        // $result = OpenAI::chat()->create([
+        //     'model' => 'gpt-3.5-turbo',
+        //     'messages' => [
+        //         [
+        //             'role' => 'user',
+        //             'content' => 'Please generate social media post based on the following prompt' . PHP_EOL . PHP_EOL . $prompt
+        //         ],
+        //     ],
+        // ]);
+
+        return response([
+            // 'content' => $result->choices[0]->message->content
+            'content' => "Excting news, we are thrilled to announce that we just released a brand new feature in our website."
+        ]);
     }
 }
