@@ -4,10 +4,12 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
 
 
 
@@ -47,6 +49,8 @@ Route::get('/group/confirm-invitation/{token}', [GroupController::class, 'confir
      Route::delete('/comment/{comment}', [PostController::class, 'deleteComment'])->name('comment.delete');
      Route::put('/comment/{comment}', [PostController::class, 'updateComment'])->name('comment.update');
      Route::post('/comment/{comment}/reaction', [PostController::class, 'commentReaction'])->name('comment.reaction');
+     // Search
+     Route::get('/search/{keywords}', [SearchController::class, 'search'])->name('search');
      // Open AI
      Route::post('/ai-post', [PostController::class, 'generatePostContentUsingOpenAI'])->name('post.ai.generate');
 

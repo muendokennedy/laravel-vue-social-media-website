@@ -250,7 +250,7 @@
                         <div v-if="formErrors.attachments" class="border-l-4 border-red-500 py-2 px-3 bg-red-100 mt-3 text-gray-800">
                             {{ formErrors.attachments }}
                         </div>
-                        <button @click="getAIContent">AI Post</button>
+                        <button class="flex mt-4 items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" @click="getAIContent">AI Post</button>
                         <div class="grid gap-3 my-3"
                         :class="[
                             computedAttachments.length === 1 ? 'grid-cols-1' :  'grid-cols-2'
