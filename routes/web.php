@@ -50,7 +50,7 @@ Route::get('/group/confirm-invitation/{token}', [GroupController::class, 'confir
      Route::put('/comment/{comment}', [PostController::class, 'updateComment'])->name('comment.update');
      Route::post('/comment/{comment}/reaction', [PostController::class, 'commentReaction'])->name('comment.reaction');
      // Search
-     Route::get('/search/{keywords}', [SearchController::class, 'search'])->name('search');
+     Route::get('/search/{search?}', [SearchController::class, 'search'])->name('search');
      // Open AI
      Route::post('/ai-post', [PostController::class, 'generatePostContentUsingOpenAI'])->name('post.ai.generate');
 

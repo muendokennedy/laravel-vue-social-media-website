@@ -14,22 +14,28 @@ class SearchController extends Controller
 {
     //
 
-    public function search(Request $request)
+    public function search(Request $request, string $search = null)
     {
-        $search = $request->get('keywords');
+
+        if(!$search){
+            return redirect(route('home'));
+        }
 
         $users = User::query()
                     ->where('name', 'like', "%$search%")
                     ->orWhere('username', 'like', "%$search%")
+                    ->latest()
                     ->get();
 
         $groups = Group::query()
                     ->where('name', 'like', "%$search%")
                     ->orWhere('about', 'like', "%$search%")
+                    ->latest()
                     ->get();
 
         $posts = Post::query()
                     ->where('body', 'like', "%$search%")
+                    ->latest()
                     ->paginate(5);
 
         $posts = PostResource::collection($posts);
@@ -40,6 +46,7 @@ class SearchController extends Controller
 
         return inertia('Search', [
             'posts' => $posts,
+            'search' => $search,
             'users' => UserResource::collection($users),
             'groups' => GroupResource::collection($groups)
         ]);
