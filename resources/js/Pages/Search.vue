@@ -5,6 +5,7 @@ import PostList from '@/Components/app/PostList.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 
 const props = defineProps({
+    search: String,
     users: Array,
     groups: Array,
     posts: Object
@@ -12,8 +13,8 @@ const props = defineProps({
 </script>
 <template>
     <AuthenticatedLayout>
-        <div class="p-8">
-            <div class="grid gap-2 grid-cols-1 sm:grid-cols-2">
+        <div class="p-4">
+            <div v-if="!search.startsWith('#')" class="grid gap-2 grid-cols-1 sm:grid-cols-2">
                 <div class="shadow bg-white p-3 rounded mb-3">
                     <h2 class="text-lg font-bold">Users</h2>
                     <div class="grid-cols-2">

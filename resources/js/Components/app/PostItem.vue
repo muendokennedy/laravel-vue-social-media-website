@@ -12,7 +12,7 @@ import IndigoButton from '@/Components/app/IndigoButton.vue'
 import EditDeleteDropdown from '@/Components/app/EditDeleteDropdown.vue'
 import PostAttachments from '@/Components/app/PostAttachments.vue'
 import CommentList from '@/Components/app/CommentList.vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
     post: Object,
@@ -47,6 +47,13 @@ const sendReaction = () => {
     })
 }
 
+const postBody = computed(() => props.post.body.replace(
+    /(#\w+)(?![^<]*<\/a>)/g,
+    (match, group) => {
+        const encodedGroup = encodeURIComponent(group)
+        return `<a href="/search/${encodedGroup}" class="hashtag">${group}</a>`
+    }))
+
 </script>
 <template>
     <div class="bg-white rounded p-4 mb-3">
@@ -55,7 +62,7 @@ const sendReaction = () => {
             <EditDeleteDropdown :user="post.user" :post="post" @edit="openEditModel" @delete="deletePost"/>
         </div>
         <div class="mb-3">
-            <ReadMoreReadLess :content="post.body"/>
+            <ReadMoreReadLess :content="postBody"/>
         </div>
         <div class="grid gap-3 mb-3"
         :class="[
