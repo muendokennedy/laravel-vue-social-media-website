@@ -2,6 +2,8 @@
 import { ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
 import { PaperClipIcon } from '@heroicons/vue/20/solid'
 import { isImage } from '@/helpers.js'
+import { isVideo } from '@/helpers.js'
+import { PlayCircleIcon } from '@heroicons/vue/24/outline'
 
 defineProps({
     attachments: {
@@ -23,6 +25,11 @@ defineEmits(['attachmentClick']);
                 <ArrowDownTrayIcon class="size-4"/>
             </a>
             <img v-if="isImage(attachment)" :src="attachment.url" alt="" class="object-cover w-full h-full">
+            <div v-else-if="isVideo(attachment)" class="flex justify-center items-center">
+                <video :src="attachment.url"></video>
+                <PlayCircleIcon class="size-32 absolute text-gray-100"/>
+                <div class="absolute left-0 top-0 w-full h-full bg-black/50"></div>
+            </div>
             <div v-else class="flex flex-col items-center justify-center">
                 <PaperClipIcon class="size-10 mr-2"/>
                 <small>{{ attachment.name }}</small>
