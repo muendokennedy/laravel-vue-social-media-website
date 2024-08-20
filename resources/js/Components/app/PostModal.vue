@@ -32,6 +32,7 @@
     const attachmentFiles = ref([])
     const formErrors = ref({})
     const attachmentErrors = ref([])
+    let debounceTimeout = null
 
     watch(() => props.post, () => {
             form.body = props.post.body || ''
@@ -105,13 +106,11 @@
     const editor = ClassicEditor
 
     const editorConfig = {
+        mediaEmbed: {
+            removeProviders: ['dailymotion', 'spotify', 'youtube', 'vimeo', 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook']
+        },
         toolbar: ['heading', '|', 'bold', 'italic', '|', 'link', '|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote']
     }
-
-    // function openModal() {
-    //     show.value = true
-    // }
-
     const attachmentExtensions = usePage().props.attachmentExtensions
 
     const onAttachmentChoose = async (event) => {
@@ -195,6 +194,48 @@
         })
     }
 
+    const fetchPreview = (url) => {
+        clearTimeout(debounceTimeout)
+
+        setTimeout(() => {
+            debounceTimeout = null
+        }, 1000)
+    }
+
+    const onInputChange = () => {
+        let url = matchHref()
+        if(!url){
+            url = matchLink()
+        }
+        if(url){
+            fetchPreview(url)
+        }
+    }
+
+    const matchHref = () => {
+        const urlRegex = /<a.+href="((https?):\/\/[^"]+)"/
+
+        const match = form.body.match(urlRegex)
+
+        if(match && match.length > 0){
+            return match[1]
+        }
+
+        return null
+    }
+
+    const matchLink = () => {
+        const urlRegex = /(?:https?):\/\/[^\s<]+/
+
+        const match = form.body.match(urlRegex)
+
+        if(match && match.length > 0){
+            return match[0]
+        }
+
+        return null
+    }
+
 </script>
 <template>
     <teleport to="body">
@@ -242,7 +283,7 @@
                     <div class="p-4">
                         <PostUserInfo :post="post" :show-time="false" class="mb-4"/>
                         <div v-if="formErrors.group_id" class="bg-red-400 py-2 px-3 text-white rounded mb-3">{{ formErrors.group_id }}</div>
-                        <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
+                        <ckeditor :editor="editor" v-model="form.body" :config="editorConfig" @input="onInputChange"></ckeditor>
                         <div v-if="showExtensionText" class="border-l-4 border-amber-500 py-2 px-3 bg-amber-100 mt-3 text-gray-800">
                             File must be one of the following extensions:
                             {{ $page.props.attachmentExtensions.join(', ') }}
