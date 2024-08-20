@@ -18,7 +18,12 @@ class Post extends Model
     protected $fillable = [
       'user_id',
       'body',
-      'group_id'
+      'group_id',
+      'preview'
+    ];
+
+    protected $casts = [
+        'preview' => 'json'
     ];
 
     public function user(): BelongsTo
