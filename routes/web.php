@@ -53,6 +53,7 @@ Route::get('/group/confirm-invitation/{token}', [GroupController::class, 'confir
      Route::get('/search/{search?}', [SearchController::class, 'search'])->name('search');
      // Open AI
      Route::post('/ai-post', [PostController::class, 'generatePostContentUsingOpenAI'])->name('post.ai.generate');
+     Route::post('/fetch-url-preview', [PostController::class, 'fetchUrlPreview'])->name('post.fetchUrlPreview');
 
  });
 

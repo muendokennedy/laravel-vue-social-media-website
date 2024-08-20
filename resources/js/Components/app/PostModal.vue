@@ -32,7 +32,8 @@
     const attachmentFiles = ref([])
     const formErrors = ref({})
     const attachmentErrors = ref([])
-    let debounceTimeout = null
+    const urlPreview = ref({})
+    let previewUrl = ref(null) // The url which was used to fetch the latest preview
 
     watch(() => props.post, () => {
             form.body = props.post.body || ''
@@ -195,11 +196,25 @@
     }
 
     const fetchPreview = (url) => {
-        clearTimeout(debounceTimeout)
 
-        setTimeout(() => {
-            debounceTimeout = null
-        }, 1000)
+        if(url === previewUrl.value){
+            return;
+        }
+            previewUrl.value = url
+            urlPreview.value = {}
+            if(url){
+                axiosClient.post(route('post.fetchUrlPreview'), {url})
+                .then(({data}) => {
+                    urlPreview.value = {
+                        title: data['og:title'],
+                        description: data['og:description'],
+                        image: data['og:image']
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            }
     }
 
     const onInputChange = () => {
@@ -207,9 +222,7 @@
         if(!url){
             url = matchLink()
         }
-        if(url){
             fetchPreview(url)
-        }
     }
 
     const matchHref = () => {
@@ -284,6 +297,13 @@
                         <PostUserInfo :post="post" :show-time="false" class="mb-4"/>
                         <div v-if="formErrors.group_id" class="bg-red-400 py-2 px-3 text-white rounded mb-3">{{ formErrors.group_id }}</div>
                         <ckeditor :editor="editor" v-model="form.body" :config="editorConfig" @input="onInputChange"></ckeditor>
+                        <a :href="previewUrl" v-if="urlPreview.title" target="_blank" class="block mt-4 border border-indigo-200 bg-indigo-50">
+                            <img :src="urlPreview.image" class="max-w-full" :alt="urlPreview.title">
+                            <div class="p-2">
+                                <h3 class="font-semibold">{{ urlPreview.title }}</h3>
+                                <p class="text-sm">{{ urlPreview.description }}</p>
+                            </div>
+                        </a>
                         <div v-if="showExtensionText" class="border-l-4 border-amber-500 py-2 px-3 bg-amber-100 mt-3 text-gray-800">
                             File must be one of the following extensions:
                             {{ $page.props.attachmentExtensions.join(', ') }}
