@@ -38,6 +38,7 @@
 
     watch(() => props.post, () => {
             form.body = props.post.body || ''
+            onInputChange()
     })
 
     const show = computed({

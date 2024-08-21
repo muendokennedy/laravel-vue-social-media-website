@@ -48,12 +48,17 @@ const sendReaction = () => {
     })
 }
 
-const postBody = computed(() => props.post.body.replace(
-    /(#\w+)(?![^<]*<\/a>)/g,
-    (match, group) => {
-        const encodedGroup = encodeURIComponent(group)
-        return `<a href="/search/${encodedGroup}" class="hashtag">${group}</a>`
-    }))
+const postBody = computed(() => {
+    let content = props.post.body.replace(
+        /(?:(\s+)|<p>)((#\w+)(?![^<]*<\/a>))/g,
+            (match, group1, group2) => {
+                const encodedGroup = encodeURIComponent(group2)
+                return `${group1 || ''} <a href="/search/${encodedGroup}" class="hashtag">${group2}</a>`
+            }
+    )
+
+    return content
+})
 
 </script>
 <template>

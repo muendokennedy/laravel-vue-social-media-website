@@ -72,9 +72,18 @@ class StorePostRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $body = $this->input('body') ?: '';
+        $previewUrl = $this->input('preview_url') ?: '';
+
+        $trimmedBody = trim(strip_tags($body));
+
+        if($trimmedBody === $previewUrl){
+            $body = '';
+        }
+
         $this->merge([
             'user_id' => auth()->user()->id,
-            'body' => $this->input('body') ?: ''
+            'body' => $body
         ]);
     }
 
