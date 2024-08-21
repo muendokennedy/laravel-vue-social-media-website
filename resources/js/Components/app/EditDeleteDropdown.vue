@@ -1,6 +1,6 @@
 <script setup>
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { ChevronDownIcon, EyeIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon } from '@heroicons/vue/20/solid'
+import { ChevronDownIcon, MapPinIcon, EyeIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon } from '@heroicons/vue/20/solid'
 import { ClipboardIcon } from '@heroicons/vue/24/outline'
 import { usePage, Link } from '@inertiajs/vue3'
 import { comment } from 'postcss';
@@ -32,7 +32,11 @@ const deleteAllowed = computed(() => {
     return !props.comment && props.post.group?.role === 'admin'
 })
 
-defineEmits(['edit', 'delete'])
+const pinAllowed = computed(() => {
+    return user.value.id === authUser.id || props.post.group && props.post.group.role === 'admin'
+})
+
+defineEmits(['edit', 'delete', 'pin'])
 
 const copyToClipboard = async () => {
 
@@ -118,6 +122,24 @@ const copyToClipboard = async () => {
                     aria-hidden="true"
                     />
                     Edit
+                </button>
+                </MenuItem>
+                <MenuItem v-if="pinAllowed" v-slot="{ active }">
+                <button
+
+                @click="$emit('pin')"
+
+                    :class="[
+                    active ? 'bg-indigo-500 text-white' : 'text-gray-900',
+                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                    ]"
+                >
+                    <MapPinIcon
+                    :active="active"
+                    class="mr-2 h-5 w-5 text-indigo-400"
+                    aria-hidden="true"
+                    />
+                    pin
                 </button>
                 </MenuItem>
                 <MenuItem v-if="deleteAllowed" v-slot="{ active }">
