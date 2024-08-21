@@ -35,6 +35,10 @@ const deletePost = () => {
     }
 }
 
+const pinUnpinPost = () => {
+    axiosClient.post(route('post.pinupin'))
+}
+
 const openAttachment = (index) => {
     emit('attachmentClick', props.post, index)
 }
@@ -65,7 +69,7 @@ const postBody = computed(() => {
     <div class="bg-white rounded p-4 mb-3">
         <div class="flex justify-between mb-3">
             <PostUserInfo :post="post" class="mb-4"/>
-            <EditDeleteDropdown :user="post.user" :post="post" @edit="openEditModel" @delete="deletePost"/>
+            <EditDeleteDropdown :user="post.user" :post="post" @edit="openEditModel" @delete="deletePost" @pin="pinUnpinPost"/>
         </div>
         <div class="mb-3">
             <ReadMoreReadLess :content="postBody"/>

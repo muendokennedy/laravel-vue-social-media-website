@@ -411,4 +411,18 @@ class PostController extends Controller
 
         return $ogTags;
     }
+
+    public function pinUpinPost(Request $request, Post $post)
+    {
+        if($post->isOwner(auth()->id()) || $post->group && $post->group->isAdmin(auth()->id())){
+
+                    $post->pinned = !$post->pinned;
+
+                    $post->save();
+
+        }
+
+
+        return response(new PostResource($post));
+    }
 }

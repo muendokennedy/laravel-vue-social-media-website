@@ -20,7 +20,8 @@ class Post extends Model
       'body',
       'group_id',
       'preview',
-      'preview_url'
+      'preview_url',
+      'pinned'
     ];
 
     protected $casts = [
