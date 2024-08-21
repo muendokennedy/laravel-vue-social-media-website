@@ -69,9 +69,7 @@ const postBody = computed(() => {
         </div>
         <div class="mb-3">
             <ReadMoreReadLess :content="postBody"/>
-            <div v-if="post.preview && post.preview.title" class="" >
-                <UrlPreview :preview="post.preview" :url="post.preview_url"/>
-            </div>
+            <UrlPreview :preview="post.preview" :url="post.preview_url"/>
         </div>
         <div class="grid gap-3 mb-3"
         :class="[
