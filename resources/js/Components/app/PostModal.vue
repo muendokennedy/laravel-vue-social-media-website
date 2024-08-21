@@ -7,6 +7,7 @@
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     import { isImage } from '@/helpers.js'
     import axiosClient from '@/axiosClient.js'
+    import UrlPreview from '@/Components/app/UrlPreview.vue'
 
 
     const props = defineProps({
@@ -27,13 +28,13 @@
         attachments: [],
         deleted_file_ids: [],
         preview: {},
+        preview_url: null,
         _method: 'POST'
     })
 
     const attachmentFiles = ref([])
     const formErrors = ref({})
     const attachmentErrors = ref([])
-    let previewUrl = ref(null) // The url which was used to fetch the latest preview
 
     watch(() => props.post, () => {
             form.body = props.post.body || ''
@@ -197,10 +198,10 @@
 
     const fetchPreview = (url) => {
 
-        if(url === previewUrl.value){
+        if(url === form.preview_url){
             return;
         }
-            previewUrl.value = url
+            form.preview_url = url
             form.preview = {}
             if(url){
                 axiosClient.post(route('post.fetchUrlPreview'), {url})
@@ -297,13 +298,7 @@
                         <PostUserInfo :post="post" :show-time="false" class="mb-4"/>
                         <div v-if="formErrors.group_id" class="bg-red-400 py-2 px-3 text-white rounded mb-3">{{ formErrors.group_id }}</div>
                         <ckeditor :editor="editor" v-model="form.body" :config="editorConfig" @input="onInputChange"></ckeditor>
-                        <a :href="previewUrl" v-if="form.preview.title" target="_blank" class="block mt-4 border border-indigo-200 bg-indigo-50">
-                            <img :src="form.preview.image" class="max-w-full" :alt="form.preview.title">
-                            <div class="p-2">
-                                <h3 class="font-semibold">{{ form.preview.title }}</h3>
-                                <p class="text-sm">{{ form.preview.description }}</p>
-                            </div>
-                        </a>
+                        <UrlPreview :preview="form.preview" :url="form.preview_url"/>
                         <div v-if="showExtensionText" class="border-l-4 border-amber-500 py-2 px-3 bg-amber-100 mt-3 text-gray-800">
                             File must be one of the following extensions:
                             {{ $page.props.attachmentExtensions.join(', ') }}

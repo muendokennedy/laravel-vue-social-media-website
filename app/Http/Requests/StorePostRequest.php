@@ -36,6 +36,7 @@ class StorePostRequest extends FormRequest
             //
             'body' => 'nullable | string',
             'preview' => 'nullable | array',
+            'preview_url' => 'nullable | string',
             'attachments' => [
                 'array',
                 'max:50',

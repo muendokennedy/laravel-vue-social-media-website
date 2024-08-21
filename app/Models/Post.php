@@ -19,7 +19,8 @@ class Post extends Model
       'user_id',
       'body',
       'group_id',
-      'preview'
+      'preview',
+      'preview_url'
     ];
 
     protected $casts = [

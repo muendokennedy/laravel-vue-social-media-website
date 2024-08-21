@@ -13,6 +13,7 @@ import EditDeleteDropdown from '@/Components/app/EditDeleteDropdown.vue'
 import PostAttachments from '@/Components/app/PostAttachments.vue'
 import CommentList from '@/Components/app/CommentList.vue'
 import { ref, computed } from 'vue'
+import UrlPreview from '@/Components/app/UrlPreview.vue'
 
 const props = defineProps({
     post: Object,
@@ -63,6 +64,9 @@ const postBody = computed(() => props.post.body.replace(
         </div>
         <div class="mb-3">
             <ReadMoreReadLess :content="postBody"/>
+            <div v-if="post.preview && post.preview.title" class="" >
+                <UrlPreview :preview="post.preview" :url="post.preview_url"/>
+            </div>
         </div>
         <div class="grid gap-3 mb-3"
         :class="[

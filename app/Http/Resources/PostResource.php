@@ -22,6 +22,8 @@ class PostResource extends JsonResource
         return [
             'id' => $this->id,
             'body' => $this->body,
+            'preview' => $this->preview,
+            'preview_url' => $this->preview_url,
             'created_at' => $this->created_at->diffForHumans(),
             'updated_at' => $this->updated_at->diffForHumans(),
             'time_difference' => $this->created_at->diffInSeconds($this->updated_at),
