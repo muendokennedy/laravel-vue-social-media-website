@@ -33,9 +33,8 @@ class SearchController extends Controller
                     ->latest()
                     ->get();
 
-        $posts = Post::query()
+        $posts = Post::postsForTimeline(auth()->id())
                     ->where('body', 'like', "%$search%")
-                    ->latest()
                     ->paginate(5);
 
         $posts = PostResource::collection($posts);

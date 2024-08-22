@@ -420,9 +420,10 @@ class PostController extends Controller
 
                     $post->save();
 
+                    return response(new PostResource($post));
         }
 
+        return response('You do not have permission to perform this action', 403);
 
-        return response(new PostResource($post));
     }
 }

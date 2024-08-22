@@ -46,7 +46,7 @@ class GroupController extends Controller
         $userId = auth()->id();
 
         if($group->hasApprovedUser($userId)){
-            $posts = Post::postsForTimeline($userId)
+            $posts = Post::postsForTimeline($userId, true)
                             ->where('group_id', $group->id)
                             ->paginate(5);
             $posts = PostResource::collection($posts);

@@ -139,7 +139,7 @@ const copyToClipboard = async () => {
                     class="mr-2 h-5 w-5 text-indigo-400"
                     aria-hidden="true"
                     />
-                    pin
+                    {{ props.post.pinned ? 'Unpin' : 'Pin' }}
                 </button>
                 </MenuItem>
                 <MenuItem v-if="deleteAllowed" v-slot="{ active }">

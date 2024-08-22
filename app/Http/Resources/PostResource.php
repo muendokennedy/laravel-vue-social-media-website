@@ -24,6 +24,7 @@ class PostResource extends JsonResource
             'body' => $this->body,
             'preview' => $this->preview,
             'preview_url' => $this->preview_url,
+            'pinned' => $this->pinned,
             'created_at' => $this->created_at->diffForHumans(),
             'updated_at' => $this->updated_at->diffForHumans(),
             'time_difference' => $this->created_at->diffInSeconds($this->updated_at),

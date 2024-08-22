@@ -11,6 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ *  class Post
+ *
+ * @property Group $group
+ *
+ */
 class Post extends Model
 {
     use HasFactory;
@@ -56,9 +62,9 @@ class Post extends Model
     }
 
     // TODO consider using a local scope for this
-    public static function postsForTimeline($userId): Builder
+    public static function postsForTimeline($userId, $pinnedPosts = false): Builder
     {
-        return Post::query()
+        $query = Post::query()
                     ->withCount('reactions')
                     ->with([
                         'comments' => function($query){
@@ -66,8 +72,13 @@ class Post extends Model
                         },
                         'reactions' => function($query) use ($userId){
                         $query->where('user_id', $userId);
-                    }])
-                    ->latest();
+                    }]);
+
+                    if($pinnedPosts){
+                        $query->orderBy('pinned', 'desc')->latest();
+                    }
+
+                    return $query;
     }
     public function isOwner($userId): bool
     {

@@ -2,7 +2,7 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDownTrayIcon, PaperClipIcon } from '@heroicons/vue/20/solid'
-import { ChatBubbleLeftRightIcon, ChatBubbleLeftEllipsisIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
+import { ChatBubbleLeftRightIcon, MapPinIcon, ChatBubbleLeftEllipsisIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
 import PostUserInfo from '@/Components/app/PostUserInfo.vue'
 import ReadMoreReadLess from '@/Components/app/ReadMoreReadLess.vue'
 import { router, usePage } from '@inertiajs/vue3'
@@ -36,7 +36,13 @@ const deletePost = () => {
 }
 
 const pinUnpinPost = () => {
-    axiosClient.post(route('post.pinupin'))
+    axiosClient.post(route('post.pinupin', props.post))
+    .then(response => {
+        props.post.pinned = !props.post.pinned
+    })
+    .catch(error => {
+        console.log(error)
+    })
 }
 
 const openAttachment = (index) => {
@@ -69,7 +75,17 @@ const postBody = computed(() => {
     <div class="bg-white rounded p-4 mb-3">
         <div class="flex justify-between mb-3">
             <PostUserInfo :post="post" class="mb-4"/>
-            <EditDeleteDropdown :user="post.user" :post="post" @edit="openEditModel" @delete="deletePost" @pin="pinUnpinPost"/>
+            <div class="flex items-center gap-2">
+                <template v-if="post.pinned">
+                    <MapPinIcon
+                    :active="active"
+                    class="mr-1 h-5 w-5 text-indigo-400"
+                    aria-hidden="true"
+                    />
+                    Pinned
+                </template>
+                <EditDeleteDropdown :user="post.user" :post="post" @edit="openEditModel" @delete="deletePost" @pin="pinUnpinPost"/>
+            </div>
         </div>
         <div class="mb-3">
             <ReadMoreReadLess :content="postBody"/>
