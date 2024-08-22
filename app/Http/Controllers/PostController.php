@@ -416,11 +416,16 @@ class PostController extends Controller
     {
         if($post->isOwner(auth()->id()) || $post->group && $post->group->isAdmin(auth()->id())){
 
-                    $post->pinned = !$post->pinned;
+            if(!$post->pinned){
+                if($post->group){
+                    Post::where('group_id', $post->group->id)->update(['pinned' => false]);
+                }
+                Post::where('user_id', auth()->id())->update(['pinned' => false]);
+            }
 
-                    $post->save();
-
-                    return response(new PostResource($post));
+            $post->pinned = !$post->pinned;
+            $post->save();
+            return response(new PostResource($post));
         }
 
         return response('You do not have permission to perform this action', 403);
