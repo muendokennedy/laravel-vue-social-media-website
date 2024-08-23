@@ -32,7 +32,12 @@ class ProfileController extends Controller
             ])->exists();
         }
 
-        $posts = Post::postsForTimeline(auth()->id(), true)->where('user_id', $user->id)->paginate(5);
+        $posts = Post::postsForTimeline(auth()->id(), false)
+                    ->leftJoin('users AS u', 'u.pinned_post_id', 'posts.id')
+                    ->where('user_id', $user->id)
+                    ->orderBy('u.pinned_post_id', 'desc')
+                    ->orderBy('posts.created_at', 'desc')
+                    ->paginate(5);
 
         $posts = PostResource::collection($posts);
 

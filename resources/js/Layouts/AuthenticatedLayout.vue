@@ -10,7 +10,7 @@ import TextInput from '@/Components/TextInput.vue'
 
 const showingNavigationDropdown = ref(false)
 
-const keywords = ref(usePage().props.search)
+const keywords = ref(usePage().props.search || '')
 
 const authUser = usePage().props.auth.user
 

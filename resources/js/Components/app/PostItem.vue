@@ -28,6 +28,25 @@ const emit = defineEmits(['editClick', 'attachmentClick'])
 const openEditModel = () => {
     emit('editClick', props.post)
 }
+const postBody = computed(() => {
+    let content = props.post.body.replace(
+        /(?:(\s+)|<p>)((#\w+)(?![^<]*<\/a>))/g,
+            (match, group1, group2) => {
+                const encodedGroup = encodeURIComponent(group2)
+                return `${group1 || ''} <a href="/search/${encodedGroup}" class="hashtag">${group2}</a>`
+            }
+    )
+
+    return content
+})
+
+const isPinned = computed(() => {
+    if(group?.id){
+        return group?.pinned_post_id === props.post.id
+    }
+
+    return authUser?.pinned_post_id === props.post.id
+})
 
 const deletePost = () => {
     if(window.confirm('Are you sure you want to delete this post!')){
@@ -42,12 +61,21 @@ const pinUnpinPost = () => {
         forGroup: group?.id
     })
 
-    const isPinned = group?.pinned_post_id === props.post.id
+    let hasBeenPinned = false
+
+    if(group?.id){
+        hasBeenPinned = group?.pinned_post_id === props.post.id
+    } else {
+        hasBeenPinned = authUser?.pinned_post_id === props.post.id
+    }
+
 
     form.post(route('post.pinupin', props.post), {
         onSuccess: () => {
             if(group?.id){
-                group.pinned_post_id = isPinned ? null : props.post.id
+                group.pinned_post_id = hasBeenPinned ? null : props.post.id
+            } else {
+                authUser.pinned_post_id = hasBeenPinned ? null : props.post.id
             }
         }
     })
@@ -66,17 +94,6 @@ const sendReaction = () => {
     })
 }
 
-const postBody = computed(() => {
-    let content = props.post.body.replace(
-        /(?:(\s+)|<p>)((#\w+)(?![^<]*<\/a>))/g,
-            (match, group1, group2) => {
-                const encodedGroup = encodeURIComponent(group2)
-                return `${group1 || ''} <a href="/search/${encodedGroup}" class="hashtag">${group2}</a>`
-            }
-    )
-
-    return content
-})
 
 </script>
 <template>
@@ -84,7 +101,7 @@ const postBody = computed(() => {
         <div class="flex justify-between mb-3">
             <PostUserInfo :post="post" class="mb-4"/>
             <div class="flex items-center gap-2">
-                <div v-if="group.pinned_post_id === post.id" class="flex items-center text-xs">
+                <div v-if="isPinned" class="flex items-center text-xs">
                     <MapPinIcon
                     :active="active"
                     class="mr-1 h-5 w-5 text-indigo-400"

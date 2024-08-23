@@ -38,6 +38,14 @@ const pinAllowed = computed(() => {
     return user.value.id === authUser.id || props.post.group && props.post.group.role === 'admin'
 })
 
+const isPinned = computed(() => {
+    if(group?.id){
+        return group?.pinned_post_id === props.post.id
+    }
+
+    return authUser?.pinned_post_id === props.post.id
+})
+
 defineEmits(['edit', 'delete', 'pin'])
 
 const copyToClipboard = async () => {
@@ -141,7 +149,7 @@ const copyToClipboard = async () => {
                     class="mr-2 h-5 w-5 text-indigo-400"
                     aria-hidden="true"
                     />
-                    {{ group?.pinned_post_id === post.id ? 'Unpin' : 'Pin' }}
+                    {{ isPinned ? 'Unpin' : 'Pin' }}
                 </button>
                 </MenuItem>
                 <MenuItem v-if="deleteAllowed" v-slot="{ active }">
