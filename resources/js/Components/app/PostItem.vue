@@ -5,7 +5,7 @@ import { ChevronDownIcon, PencilIcon, TrashIcon, EllipsisVerticalIcon, ArrowDown
 import { ChatBubbleLeftRightIcon, MapPinIcon, ChatBubbleLeftEllipsisIcon, HandThumbUpIcon } from '@heroicons/vue/24/outline'
 import PostUserInfo from '@/Components/app/PostUserInfo.vue'
 import ReadMoreReadLess from '@/Components/app/ReadMoreReadLess.vue'
-import { router, usePage } from '@inertiajs/vue3'
+import { router, usePage, useForm } from '@inertiajs/vue3'
 import axiosClient from '@/axiosClient.js'
 import InputTextarea from '@/Components/InputTextarea.vue'
 import IndigoButton from '@/Components/app/IndigoButton.vue'
@@ -18,6 +18,8 @@ import UrlPreview from '@/Components/app/UrlPreview.vue'
 const props = defineProps({
     post: Object,
 })
+
+const group = usePage().props.group
 
 const authUser = usePage().props.auth.user
 
@@ -36,12 +38,18 @@ const deletePost = () => {
 }
 
 const pinUnpinPost = () => {
-    axiosClient.post(route('post.pinupin', props.post))
-    .then(response => {
-        props.post.pinned = !props.post.pinned
+    const form = useForm({
+        forGroup: group?.id
     })
-    .catch(error => {
-        console.log(error)
+
+    const isPinned = group?.pinned_post_id === props.post.id
+
+    form.post(route('post.pinupin', props.post), {
+        onSuccess: () => {
+            if(group?.id){
+                group.pinned_post_id = isPinned ? null : props.post.id
+            }
+        }
     })
 }
 
@@ -76,14 +84,14 @@ const postBody = computed(() => {
         <div class="flex justify-between mb-3">
             <PostUserInfo :post="post" class="mb-4"/>
             <div class="flex items-center gap-2">
-                <template v-if="post.pinned">
+                <div v-if="group.pinned_post_id === post.id" class="flex items-center text-xs">
                     <MapPinIcon
                     :active="active"
                     class="mr-1 h-5 w-5 text-indigo-400"
                     aria-hidden="true"
                     />
-                    Pinned
-                </template>
+                    pinned
+                </div>
                 <EditDeleteDropdown :user="post.user" :post="post" @edit="openEditModel" @delete="deletePost" @pin="pinUnpinPost"/>
             </div>
         </div>

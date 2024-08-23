@@ -19,6 +19,8 @@ const props = defineProps({
 
 const authUser = usePage().props.auth.user
 
+const group = usePage().props.group
+
 const user = computed(() => props.comment?.user || props.post?.user)
 
 const editAllowed = computed(() => user.value.id === authUser.id)
@@ -139,7 +141,7 @@ const copyToClipboard = async () => {
                     class="mr-2 h-5 w-5 text-indigo-400"
                     aria-hidden="true"
                     />
-                    {{ props.post.pinned ? 'Unpin' : 'Pin' }}
+                    {{ group?.pinned_post_id === post.id ? 'Unpin' : 'Pin' }}
                 </button>
                 </MenuItem>
                 <MenuItem v-if="deleteAllowed" v-slot="{ active }">

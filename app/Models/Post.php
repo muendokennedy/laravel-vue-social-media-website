@@ -26,8 +26,7 @@ class Post extends Model
       'body',
       'group_id',
       'preview',
-      'preview_url',
-      'pinned'
+      'preview_url'
     ];
 
     protected $casts = [
@@ -62,7 +61,7 @@ class Post extends Model
     }
 
     // TODO consider using a local scope for this
-    public static function postsForTimeline($userId, $pinnedPosts = false): Builder
+    public static function postsForTimeline($userId, $getLatestPosts = true): Builder
     {
         $query = Post::query()
                     ->withCount('reactions')
@@ -74,8 +73,8 @@ class Post extends Model
                         $query->where('user_id', $userId);
                     }]);
 
-                    if($pinnedPosts){
-                        $query->orderBy('pinned', 'desc')->latest();
+                    if($getLatestPosts){
+                        $query->latest();
                     }
 
                     return $query;

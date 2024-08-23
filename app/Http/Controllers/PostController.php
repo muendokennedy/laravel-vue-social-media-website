@@ -414,21 +414,52 @@ class PostController extends Controller
 
     public function pinUpinPost(Request $request, Post $post)
     {
-        if($post->isOwner(auth()->id()) || $post->group && $post->group->isAdmin(auth()->id())){
+        $forGroup = $request->get('forGroup', false);
+        $group = $post->group;
 
-            if(!$post->pinned){
-                if($post->group){
-                    Post::where('group_id', $post->group->id)->update(['pinned' => false]);
-                }
-                Post::where('user_id', auth()->id())->update(['pinned' => false]);
-            }
-
-            $post->pinned = !$post->pinned;
-            $post->save();
-            return response(new PostResource($post));
+        if($forGroup && !$group){
+            return response('Invalid request', 400);
         }
 
-        return response('You do not have permission to perform this action', 403);
+        if($forGroup && !$group->isAdmin(auth()->id())){
+            return response('You do not have permission to perform this action', 403);
+        }
+
+        $pinned = false;
+
+
+        if($forGroup && $group->isAdmin(auth()->id())){
+
+            if($group->pinned_post_id === $post->id){
+
+                $group->pinned_post_id = null;
+
+            } else {
+
+                $pinned = true;
+
+                $group->pinned_post_id = $post->id;
+            }
+            $group->save();
+        }
+
+        if(!$forGroup){
+            $user = $request->user();
+
+            if($user->pinned_post_id === $post->id){
+
+                $user->pinned_post_id = null;
+
+            } else {
+
+                $pinned = true;
+
+                $user->pinned_post_id = $post->id;
+            }
+            $user->save();
+        }
+
+        return back()->with('success', 'The post was successfully ' . ($pinned ? 'pinned' : 'unpinned'));
 
     }
 }

@@ -21,6 +21,7 @@ class GroupResource extends JsonResource
             'name' => $this->name,
             'status' => $this->currentUserGroup?->status,
             'role' => $this->currentUserGroup?->role,
+            'pinned_post_id' => $this->pinned_post_id,
             'slug' => $this->slug,
             'cover_url' => $this->cover_path ? Storage::url($this->cover_path) : '/images/coverimageholder.webp',
             'thumbnail_url' => $this->thumbnail_path ? Storage::url($this->thumbnail_path) : '/images/useravatar4.webp',
