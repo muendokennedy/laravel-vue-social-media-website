@@ -9,7 +9,7 @@ defineProps({
 
 </script>
 <template>
-    <div class="px-3 bg-white h-full rounded border py-3 overflow-hidden">
+    <div class="px-3 bg-white h-full dark:bg-slate-800 dark:border-slate-900 dark:text-gray-100 rounded border py-3 overflow-hidden">
         <div class="h-full block lg:hidden">
             <Disclosure v-slot="{ open }">
                 <DisclosureButton class="text-left w-full">

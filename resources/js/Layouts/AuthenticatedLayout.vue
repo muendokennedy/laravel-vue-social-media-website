@@ -21,8 +21,8 @@ const search = () => {
 </script>
 
 <template>
-    <div class="h-full flex flex-col bg-gray-100">
-    <nav class="bg-white border-b border-gray-100">
+    <div class="h-full flex flex-col bg-gray-100 dark:bg-slate-900">
+    <nav class="bg-white border-b border-gray-100 dark:bg-slate-800 dark:border-slate-800">
         <!-- Primary Navigation Menu -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center gap-4 h-16">
@@ -45,7 +45,7 @@ const search = () => {
                 </div>
 
                 <div class="flex-1">
-                    <TextInput v-model="keywords" placeholder="Search on the website..." class="w-full" @keyup.enter="search"/>
+                    <TextInput v-model="keywords" placeholder="Search on the website..." class="w-full dark:text-gray-100" @keyup.enter="search"/>
                 </div>
 
                 <div class="hidden sm:flex sm:items-center">
@@ -56,7 +56,7 @@ const search = () => {
                                 <span class="inline-flex rounded-md">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white dark:bg-slate-800 dark:text-gray-100 dark:hover:text-gray-200 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                     >
                                         {{ authUser.name }}
 
