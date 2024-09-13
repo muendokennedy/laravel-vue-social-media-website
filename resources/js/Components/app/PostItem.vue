@@ -97,7 +97,7 @@ const sendReaction = () => {
 
 </script>
 <template>
-    <div class="bg-white dark:bg-slate-800 dark:border-slate-900 dark:text-gray-100 rounded p-4 mb-3">
+    <div class="bg-white dark:bg-slate-950 dark:border-slate-900 dark:text-gray-100 rounded p-4 mb-3">
         <div class="flex justify-between mb-3">
             <PostUserInfo :post="post" class="mb-4"/>
             <div class="flex items-center gap-2">
@@ -126,7 +126,7 @@ const sendReaction = () => {
                 <div class="flex gap-2">
                     <button @click="sendReaction" class="text-gray-800 dark:text-gray-100 flex items-center justify-between gap-1 flex-1 py-2 px-4 rounded-lg"
                     :class="[
-                        post.current_user_has_reaction ? 'bg-sky-100 hover:bg-sky-200 dark:bg-sky-900 dark:hover:bg-sky-950' : 'bg-gray-100 dark:bg-slate-900 hover:bg-gray-200 dark:hover:bg-slate-950'
+                        post.current_user_has_reaction ? 'bg-sky-100 hover:bg-sky-200 dark:bg-sky-900 dark:hover:bg-sky-950' : 'bg-gray-100 dark:bg-slate-900 hover:bg-gray-200 dark:hover:bg-slate-800'
                     ]">
                     <div class="flex flex-1">
                         <span class="mr-2">{{ post.num_of_reactions }}</span>
@@ -138,7 +138,7 @@ const sendReaction = () => {
                     </div>
                     </button>
                     <DisclosureButton
-                        class="text-gray-800 flex items-center justify-center bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg"
+                        class="text-gray-800 flex items-center dark:text-gray-100 justify-center dark:bg-slate-900 dark:hover:bg-slate-800 bg-gray-100 hover:bg-gray-200 gap-1 flex-1 py-2 px-4 rounded-lg"
                         >
                         <ChatBubbleLeftRightIcon class="size-6"/>
                         <span class="mr-2">{{ post.num_of_comments }}</span>

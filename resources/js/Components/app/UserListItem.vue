@@ -24,7 +24,7 @@ defineEmits(['approve', 'reject', 'roleChange', 'deleteUser'])
 
 </script>
 <template>
-    <div class="mb-3 bg-white dark:bg-slate-800 border-2 border-transparent hover:border-indigo-500">
+    <div class="mb-3 bg-white dark:bg-slate-950 border-2 border-transparent hover:border-indigo-500">
         <div class="flex items-center gap-2 py-2 px-3">
             <Link :href="route('profile.home', user.username)">
                 <img :src="user.avatar_url" alt="An image" class="w-8 rounded-full">
