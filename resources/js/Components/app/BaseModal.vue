@@ -55,16 +55,15 @@
                   leave-to="opacity-0 scale-95"
                 >
                   <DialogPanel
-                    class="w-full max-w-md transform overflow-hidden rounded bg-white text-left align-middle shadow-xl transition-all"
+                    class="w-full max-w-md transform overflow-hidden rounded bg-white dark:bg-slate-900 text-left align-middle shadow-xl transition-all"
                   >
 
                     <DialogTitle
                       as="h3"
-                      class="flex items-center justify-between py-3 px-4 font-medium bg-gray-100 leading-6 text-gray-900"
+                      class="flex items-center justify-between py-3 px-4 font-medium bg-gray-100 dark:bg-slate-800 leading-6 text-gray-900 dark:text-gray-100"
                     >
                       {{ title }}
-
-                      <button class="w-8 h-8 rounded-full hover:bg-black/5 transition flex items-center justify-center">
+                      <button class="w-8 h-8 rounded-full hover:bg-black/5 dark:hover:bg-black/30 transition flex items-center justify-center">
                         <XMarkIcon class="w-4 h-4" @click="closeModal"/>
                       </button>
                     </DialogTitle>

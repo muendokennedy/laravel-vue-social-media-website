@@ -5,6 +5,7 @@
     import { XMarkIcon, PaperClipIcon, BookmarkIcon, ArrowUturnLeftIcon } from '@heroicons/vue/24/solid'
     import { useForm, usePage } from '@inertiajs/vue3';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+    // import '../../../css/ckeditor.css';
     import { isImage } from '@/helpers.js'
     import axiosClient from '@/axiosClient.js'
     import UrlPreview from '@/Components/app/UrlPreview.vue'
@@ -256,7 +257,7 @@
 <template>
     <BaseModal :title="post.id ? 'Update Post' : 'Create Post'" v-model="show" @hide="closeModal">
         <div class="p-4">
-                        <PostUserInfo :post="post" :show-time="false" class="mb-4"/>
+                        <PostUserInfo :post="post" :show-time="false" class="mb-4 dark:text-gray-100"/>
                         <div v-if="formErrors.group_id" class="bg-red-400 py-2 px-3 text-white rounded mb-3">{{ formErrors.group_id }}</div>
                         <ckeditor :editor="editor" v-model="form.body" :config="editorConfig" @input="onInputChange"></ckeditor>
                         <UrlPreview :preview="form.preview" :url="form.preview_url"/>

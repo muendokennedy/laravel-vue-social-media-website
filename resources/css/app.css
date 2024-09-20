@@ -124,3 +124,31 @@
 .comment-list:hover::-webkit-scrollbar-track{
     background: #cbd5e0;
 }
+
+/* The dark mode of the ckeditor */
+
+html.dark .ck-reset_all :not(.ck-reset_all-excluded *),
+html.dark .ck.ck-reset_all{
+    color: #fff;
+}
+html.dark .ck.ck-toolbar{
+    background-color: rgb(30, 41, 59);
+    border-color: rgb(15,23,42);
+}
+html.dark .ck.ck-button:not(.ck-disabled):hover,
+html.dark a.ck.ck-button:not(.ck-disabled):hover,
+html.dark .ck.ck-button:not(.ck-disabled):active,
+html.dark a.ck.ck-button:not(.ck-disabled):active,
+html.dark .ck.ck-button.ck-on,
+html.dark a.ck.ck-button.ck-on{
+    background-color: rgb(15,23,42);
+}
+
+html.dark .ck.ck-editor__main>.ck-editor__editable{
+    background-color: rgb(30,41,59);
+    color: #fff;
+}
+
+html.dark .ck.ck-list{
+    background-color: rgb(30, 41, 59);
+}
