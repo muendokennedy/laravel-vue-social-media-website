@@ -23,13 +23,13 @@ const group = usePage().props.group
 
 const user = computed(() => props.comment?.user || props.post?.user)
 
-const editAllowed = computed(() => user.value.id === authUser.id)
+const editAllowed = computed(() => user.value.id === authUser?.id)
 
 const deleteAllowed = computed(() => {
 
-    if(user.value.id === authUser.id) return true
+    if(user.value.id === authUser?.id) return true
 
-    if(props.post.user.id === authUser.id) return true
+    if(props.post.user.id === authUser?.id) return true
 
     return !props.comment && props.post.group?.role === 'admin'
 })

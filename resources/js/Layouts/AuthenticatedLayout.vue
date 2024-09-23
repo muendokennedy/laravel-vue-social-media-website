@@ -102,7 +102,7 @@ function toggleDarkmode() {
                             </template>
                         </Dropdown>
                         <div v-else>
-                            <Link :href="route('login')">Login button</Link>
+                            <Link :href="route('login')" class="dark:text-gray-100">Login button</Link>
                         </div>
                     </div>
                 </div>
