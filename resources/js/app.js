@@ -9,6 +9,16 @@ import CKEditor from '@ckeditor/ckeditor5-vue'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+const html = window.document.documentElement
+
+const darkMode = parseInt(localStorage.getItem('darkMode') || 1)
+
+if(darkMode){
+    html.classList.add('dark')
+} else {
+    html.classList.remove('dark')
+}
+
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),

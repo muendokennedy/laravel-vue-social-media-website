@@ -114,7 +114,7 @@ const onDeleteComment = (comment) => {
                     <img :src="authUser.avatar_url" alt="" class="w-10 h-10 object-cover rounded-full border border-2 hover:border-blue-500 transition-all">
         </Link>
         <div class="flex-1 flex gap-2">
-            <InputTextarea v-model="newCommentText" rows="1" class="w-full overflow-auto resize-none max-h-40" placeholder="Enter your comment here..."/>
+            <InputTextarea v-model="newCommentText" rows="1" class="w-full dark:bg-slate-800 overflow-auto resize-none max-h-40" placeholder="Enter your comment here..."/>
             <IndigoButton @click="createComment" class="w-40 h-10 text-nowrap">Add comment</IndigoButton>
         </div>
     </div>
