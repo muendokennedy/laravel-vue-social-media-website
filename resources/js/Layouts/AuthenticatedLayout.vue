@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onUpdated } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -19,6 +19,10 @@ const search = () => {
     router.get(route('search', encodeURIComponent(keywords.value)))
 }
 
+const isDarkMode = ref(localStorage.getItem('darkMode') === '1')
+
+const currentIcon = computed(() => (isDarkMode.value ? SunIcon : MoonIcon))
+
 
 function toggleDarkmode() {
 
@@ -27,9 +31,11 @@ function toggleDarkmode() {
     if(html.classList.contains('dark')){
         html.classList.remove('dark')
         localStorage.setItem('darkMode', '0')
+        isDarkMode.value = false
     }else{
         html.classList.add('dark')
         localStorage.setItem('darkMode', '1')
+        isDarkMode.value = true
     }
 }
 
@@ -62,7 +68,7 @@ function toggleDarkmode() {
                 <div class="flex items-center gap-2 flex-1">
                     <TextInput v-model="keywords" placeholder="Search on the website..." class="w-full dark:text-gray-100" @keyup.enter="search"/>
                     <button @click="toggleDarkmode" class="dark:text-white">
-                        <MoonIcon class="size-5"/>
+                        <component :is="currentIcon" class="size-5"/>
                     </button>
                 </div>
 
