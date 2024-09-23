@@ -105,24 +105,43 @@
     text-decoration: underline;
     cursor: pointer;
 }
-.comment-list::-webkit-scrollbar{
+::-webkit-scrollbar{
     width: 0.5rem;
     background: transparent;
 }
-.comment-list::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb{
     border-radius: 0.4rem;
     background: transparent;
 }
-.comment-list::-webkit-scrollbar-track{
+::-webkit-scrollbar-track{
     background: transparent;
 
 }
-.comment-list:hover::-webkit-scrollbar-thumb{
+:hover::-webkit-scrollbar-thumb{
     background: #4f46e5;
     border-radius: 0.4rem;
 }
-.comment-list:hover::-webkit-scrollbar-track{
+:hover::-webkit-scrollbar-track{
     background: #cbd5e0;
+}
+html.dark ::-webkit-scrollbar{
+    width: 0.5rem;
+    background: transparent;
+}
+html.dark ::-webkit-scrollbar-thumb{
+    border-radius: 0.4rem;
+    background: #031a25;
+}
+html.dark ::-webkit-scrollbar-track{
+    background: transparent;
+
+}
+html.dark :hover::-webkit-scrollbar-thumb{
+    background: #0a2d36;
+    border-radius: 0.4rem;
+}
+html.dark :hover::-webkit-scrollbar-track{
+    background: #5c5f61;
 }
 
 /* The dark mode of the ckeditor */

@@ -153,7 +153,7 @@ const followUser = () => {
                 <div v-show="imagesForm.errors.avatar" class="my-2 py-2 px-3 text-white font-medium text-sm bg-red-400">
                     {{ imagesForm.errors.avatar }}
                 </div>
-                <div class="relative bg-white group px-4">
+                <div class="relative bg-white group dark:bg-slate-950 dark:text-gray-100 px-4">
                     <img :src="coverImageSource ?? user.cover_url ?? '/images/coverimageholder.webp'" alt="cover image" class="w-full h-52 object-cover">
                     <div v-if="isMyProfile" class="absolute top-2 right-2">
                         <button v-if="!coverImageSource" class="opacity-0 group-hover:opacity-100 flex items-center bg-gray-50 hover:bg-gray-100 text-gray-800 py-1 px-2 text-xs">
@@ -211,9 +211,9 @@ const followUser = () => {
                     </div>
                 </div>
             </div>
-        <div class="border-t px-4">
+        <div class="border-t m-4 mt-0">
           <TabGroup>
-            <TabList class="flex bg-white">
+            <TabList class="flex bg-white dark:bg-slate-950">
               <Tab v-slot="{ selected }" as="template">
                 <TabItem text='My Posts' :selected="selected"></TabItem>
               </Tab>
