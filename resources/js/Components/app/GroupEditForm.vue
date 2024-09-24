@@ -17,7 +17,7 @@ const editorConfig = {
 }
 </script>
 <template>
-<div class="mb-3">
+<div class="mb-3 dark:text-gray-100">
     <label for="name">Group name</label>
     <TextInput
     id="name"
@@ -27,13 +27,13 @@ const editorConfig = {
     autofocus
     />
 </div>
-<div  class="mb-3">
+<div  class="mb-3 dark:text-gray-100">
     <label for="remember">
         <Checkbox name="remember" id="remember" v-model:checked="form.auto_approval" />
         Enable auto approval
     </label>
 </div>
-<div class="mb-3">
+<div class="mb-3 dark:text-gray-100">
     <label for="about">Group Description</label>
     <ckeditor :editor="editor" v-model="form.about" :config="editorConfig"></ckeditor>
 </div>

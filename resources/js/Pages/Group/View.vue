@@ -190,7 +190,7 @@ const deleteUser = (user) => {
                 <div v-show="imagesForm.errors.thumbnail" class="my-2 py-2 px-3 text-white font-medium text-sm bg-red-400">
                     {{ imagesForm.errors.thumbnail }}
                 </div>
-                <div class="relative bg-white group">
+                <div class="relative bg-white group dark:bg-slate-950 dark:text-gray-100">
                     <img :src="coverImageSource ?? group.cover_url ?? '/images/coverimageholder.webp'" alt="cover image" class="w-full h-52 object-cover">
                     <div v-if="isCurrentUserAdmin" class="absolute top-2 right-2">
                         <button v-if="!coverImageSource" class="opacity-0 group-hover:opacity-100 flex items-center bg-gray-50 hover:bg-gray-100 text-gray-800 py-1 px-2 text-xs">
@@ -247,9 +247,9 @@ const deleteUser = (user) => {
                     </div>
                 </div>
             </div>
-        <div class="border-t p-4 pt-0">
+        <div class="border-t m-4 mt-0">
             <TabGroup>
-            <TabList class="flex bg-white">
+            <TabList class="flex bg-white dark:bg-slate-950">
               <Tab v-slot="{ selected }" as="template">
                 <TabItem text='My Posts' :selected="selected"></TabItem>
               </Tab>
@@ -271,11 +271,11 @@ const deleteUser = (user) => {
                 <template v-if="posts">
                     <CreatePost :group="group"/>
                     <PostList v-if="posts.data.length" :posts="posts.data" class="flex-1"/>
-                    <div v-else class="py-8 text-center">
+                    <div v-else class="py-8 text-center dark:text-gray-100">
                         There are no posts in this group. Be the first one to create a post
                     </div>
                 </template>
-                <div v-else class="py-8 text-center">
+                <div v-else class="py-8 text-center dark:text-gray-100">
                     You do not have permission to view posts in this group
                 </div>
               </TabPanel>
@@ -304,14 +304,14 @@ const deleteUser = (user) => {
                     @reject="rejectUser"
                     class="shadow"/>
                 </div>
-                <div v-else class="py-8 text-center">
+                <div v-else class="py-8 text-center dark:text-gray-100">
                     There are no pending requests
                 </div>
               </TabPanel>
               <TabPanel class="bg-white p-3 shadow">
                 <TabPhotos :photos="photos"/>
               </TabPanel>
-              <TabPanel class="bg-white p-3 shadow">
+              <TabPanel class="bg-white dark:bg-gray-700 p-3 shadow">
                 <template v-if="isCurrentUserAdmin">
                     <GroupEditForm :form="aboutForm"/>
                     <PrimaryButton @click="updateGroupInformation">Submit</PrimaryButton>
